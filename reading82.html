@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading 82 | Executive Study Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 260px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            padding-left: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .progress-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 0%;
+            background: var(--vibrant-green);
+            transition: 0.1s;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 4rem;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        }
+
+        .nav-controls {
+            position: fixed; top: 25px; right: 30px;
+            display: flex; gap: 12px; z-index: 1001;
+        }
+
+        .ctrl-btn {
+            width: 45px; height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main);
+            cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .ctrl-btn:hover { background: var(--vibrant-green); color: white; transform: scale(1.1); }
+
+        .doc-header { text-align: center; margin-bottom: 3rem; }
+        h1 { font-size: 2.5rem; margin: 1rem 0; font-weight: 800; }
+        .section-divider { width: 120px; height: 5px; background: var(--vibrant-green); margin: 2rem auto; border-radius: 10px; }
+        
+        .los-block { margin-bottom: 5rem; scroll-margin-top: 100px; }
+        .los-header { font-weight: 800; color: var(--vibrant-green); border-bottom: 1px solid var(--vibrant-green); display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; }
+        .los-requirement { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 1.5rem; font-style: italic; }
+        .content-body { font-family: 'Lora', serif; font-size: 1.05rem; }
+        .content-body p { margin-bottom: 1.2rem; }
+        .content-body ul, .content-body ol { margin-left: 2rem; margin-bottom: 1.2rem; }
+        .content-body li { margin-bottom: 0.5rem; }
+        .content-body strong { color: var(--vibrant-green); }
+        
+        .highlight-quote {
+            border-left: 4px solid var(--vibrant-green);
+            padding: 1.5rem; margin: 2rem 0;
+            background: rgba(16, 185, 129, 0.05);
+            font-style: italic;
+        }
+
+        .formula-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .formula-label {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1rem;
+            font-family: 'Public Sans', sans-serif;
+        }
+
+        .category-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--vibrant-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 2rem 0;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--vibrant-green);
+            font-weight: 700;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .key-concepts-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .concept-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-box {
+            background: rgba(255, 193, 7, 0.08);
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .quiz-title {
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 0.8rem;
+        }
+
+        .answer-options {
+            margin-top: 1rem;
+            margin-left: 1.5rem;
+        }
+
+        .answer-options li {
+            margin-bottom: 0.5rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .note-title {
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .doc-footer {
+            margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.8rem; letter-spacing: 2px;
+        }
+        .doc-footer a { color: var(--vibrant-green); text-decoration: none; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box { background: var(--paper-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 90%; max-width: 500px; padding: 3rem; border-radius: 8px; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="sidebar-header">Course Map</div>
+        <ul class="nav-list">
+            <li class="nav-item" data-section="intro"><a href="#intro" class="nav-link">Top of Reading</a></li>
+            <li class="nav-item" data-section="module-intro"><a href="#module-intro" class="nav-link">Module 82.1</a></li>
+            <li class="nav-item" data-section="los-a"><a href="#los-a" class="nav-link">LOS 82.a: Land Investments</a></li>
+            <li class="nav-item" data-section="land-comparison"><a href="#land-comparison" class="nav-link">Land Comparison</a></li>
+            <li class="nav-item" data-section="los-b"><a href="#los-b" class="nav-link">LOS 82.b: Commodities</a></li>
+            <li class="nav-item" data-section="commodity-sectors"><a href="#commodity-sectors" class="nav-link">Commodity Sectors</a></li>
+            <li class="nav-item" data-section="commodity-exposure"><a href="#commodity-exposure" class="nav-link">Commodity Exposure</a></li>
+            <li class="nav-item" data-section="valuation"><a href="#valuation" class="nav-link">Commodity Valuation</a></li>
+            <li class="nav-item" data-section="los-c"><a href="#los-c" class="nav-link">LOS 82.c: Risk & Return</a></li>
+            <li class="nav-item" data-section="quiz"><a href="#quiz" class="nav-link">Module Quiz</a></li>
+            <li class="nav-item" data-section="key-concepts"><a href="#key-concepts" class="nav-link">Key Concepts</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="nav-controls">
+            <a href="dashboard.html" class="ctrl-btn" title="Back to Dashboard"><i class="fa-solid fa-home"></i></a>
+            <div class="ctrl-btn" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+            <div class="ctrl-btn" onclick="openCalendar()"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="ctrl-btn" onclick="openAbout()"><i class="fa-solid fa-user-tie"></i></div>
+        </div>
+
+        <div class="document-container">
+            <header class="doc-header" id="intro">
+                <span style="font-weight: 800; font-size: 0.8rem; letter-spacing: 4px; color: var(--vibrant-green);">READING 82</span>
+                <h1>Natural Resources</h1>
+                <div class="section-divider"></div>
+            </header>
+
+            <section class="los-block" id="module-intro">
+                <span class="los-header">MODULE 82.1</span>
+                <span class="los-requirement">Farmland, Timberland, and Commodities</span>
+                <div class="content-body">
+                    <p>Natural resources comprise raw land, land used for growing crops or timber, and commodities. This module examines the features, investment characteristics, and sources of risk and return for natural resource investments.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-a">
+                <span class="los-header">LOS 82.a</span>
+                <span class="los-requirement">Explain features of raw land, timberland, and farmland and their investment characteristics.</span>
+                <div class="content-body">
+                    <p>Investment in natural resources can be a direct investment or via commingled funds such as exchange-traded funds, real estate investment trusts (REITs), limited partnerships, and limited liability companies (LLCs). Derivatives such as commodity futures and swaps are also commonly used for exposure to this asset class.</p>
+
+                    <div class="highlight-quote">
+                        Raw land, farmland, and timberland are all illiquid investments, and their value is primarily driven by location. For timberland and farmland, proximity to transportation and markets increases value, as does access to water and quality of soil.
+                    </div>
+
+                    <p><strong>Income Generation:</strong></p>
+                    <ul>
+                        <li>All three kinds of land can generate lease income and price appreciation</li>
+                        <li>Farmland and timberland also generate income from their output (crops and timber)</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Investor Base and Investment Size:</strong></p>
+                    <ul>
+                        <li><strong>Farmland:</strong> Primarily held by individuals</li>
+                        <li><strong>Raw Land and Timberland:</strong> Institutions are most likely investors</li>
+                        <li><strong>Timberland:</strong> Lot sizes tend to be much larger than farmland and require specialized expertise</li>
+                    </ul>
+
+                    <div class="note-box">
+                        <div class="note-title">Timberland Investment Management Organizations (TIMOs)</div>
+                        <p>Investors who lack the expertise to manage timberland investments can invest through timberland investment management organizations (TIMOs). These provide professional management and specialized knowledge required for timberland investments.</p>
+                    </div>
+
+                    <p><strong>Financing:</strong></p>
+                    <p>Farmland and timberland have fewer financing alternatives than residential and commercial real estate. Financing is often in the form of:</p>
+                    <ul>
+                        <li>Bank loans</li>
+                        <li>Direct private debt</li>
+                        <li>Newer REITs in farmland (allow retail investors to get a foothold in this category)</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Harvesting Flexibility:</strong></p>
+                    <ul>
+                        <li><strong>Agricultural Crops:</strong> Must be harvested within a short period</li>
+                        <li><strong>Timber:</strong> The choice of when to harvest is based on current prices and expected growth rates, providing greater flexibility</li>
+                    </ul>
+
+                    <div class="highlight-quote">
+                        <strong>Hedging Risk:</strong> Because commodity prices fluctuate, farmers often use short positions in commodity futures to hedge their expected harvest.
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">ESG Considerations</div>
+                        <p>Agricultural crops (including trees) consume carbon, and therefore, they are attractive to investors with an environmental, social, and governance (ESG) focus on climate change.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="land-comparison">
+                <span class="los-header">Comparison of Land Investments</span>
+                <div class="content-body">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Characteristic</th>
+                                <th>Raw Land</th>
+                                <th>Farmland</th>
+                                <th>Timberland</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Primary Investors</strong></td>
+                                <td>Institutions</td>
+                                <td>Individuals</td>
+                                <td>Institutions</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Liquidity</strong></td>
+                                <td>Illiquid</td>
+                                <td>Illiquid</td>
+                                <td>Illiquid</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Value Drivers</strong></td>
+                                <td>Location, lease income</td>
+                                <td>Location, transportation, water, soil quality</td>
+                                <td>Location, transportation, water, soil quality</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Income Sources</strong></td>
+                                <td>Lease income, appreciation</td>
+                                <td>Crop sales, lease income, appreciation</td>
+                                <td>Timber sales, lease income, appreciation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lot Size</strong></td>
+                                <td>Varies</td>
+                                <td>Smaller</td>
+                                <td>Much larger</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Expertise Required</strong></td>
+                                <td>Moderate</td>
+                                <td>Moderate</td>
+                                <td>Specialized (TIMOs)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Harvesting Flexibility</strong></td>
+                                <td>N/A</td>
+                                <td>Low (short harvest window)</td>
+                                <td>High (flexible timing)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-b">
+                <span class="los-header">LOS 82.b</span>
+                <span class="los-requirement">Describe features of commodities and their investment characteristics.</span>
+                <div class="content-body">
+                    <p>While it is possible to invest directly in commodities such as grain and gold, derivatives such as futures are more commonly used to gain exposure to commodities. Because commodities are physical goods, they have costs for storage and transportation.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="commodity-sectors">
+                <span class="los-header">Commodity Sectors and Classification</span>
+                <div class="content-body">
+                    <p>We can divide commodities into three major sectors:</p>
+
+                    <div class="category-box">
+                        <div class="category-title">1. Metals</div>
+                        <ul>
+                            <li><strong>Base or Industrial Metals:</strong> Copper, aluminum, zinc, nickel</li>
+                            <li><strong>Precious Metals:</strong> Gold, silver, platinum, palladium</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">2. Agricultural Products</div>
+                        <ul>
+                            <li>Grains (wheat, corn, soybeans)</li>
+                            <li>Livestock (cattle, hogs)</li>
+                            <li>Soft commodities (coffee, cocoa, sugar, cotton)</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">3. Energy Products</div>
+                        <ul>
+                            <li>Crude oil</li>
+                            <li>Natural gas</li>
+                            <li>Gasoline and heating oil</li>
+                            <li>Coal</li>
+                        </ul>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Commodity Contract Classification</div>
+                        <p>Commodity contracts are also classified based on:</p>
+                        <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                            <li><strong>Grade:</strong> Quality specifications of the commodity</li>
+                            <li><strong>Delivery Location:</strong> Where the commodity will be delivered</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Government Involvement:</strong></p>
+                    <ul>
+                        <li>Governments may provide <strong>subsidies</strong> for some food crops for consumers or <strong>price support</strong> to farmers</li>
+                        <li>Governments may <strong>control access</strong> to extractable natural resources or even be directly involved in production</li>
+                        <li><strong>Climate change–related regulation</strong> may decrease demand for fossil fuels while increasing demand for minerals such as lithium, cobalt, and nickel</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="los-block" id="commodity-exposure">
+                <span class="los-header">Methods of Commodity Exposure</span>
+                <div class="content-body">
+                    <p>Futures, forwards, and options on futures are all available forms of commodity derivatives. Futures trade on exchanges and therefore have no counterparty risk.</p>
+
+                    <p style="margin-top: 1.5rem;"><strong>Other Methods of Exposure:</strong></p>
+
+                    <div class="category-box">
+                        <div class="category-title">Exchange-Traded Products (ETPs)</div>
+                        <p>Include exchange-traded funds (ETFs) or exchange-traded notes (ETNs). ETPs are suitable for investors who are limited to buying equity shares.</p>
+                        <ul style="margin-top: 0.8rem;">
+                            <li>ETFs can invest in commodities or commodity futures</li>
+                            <li>Can track prices or indexes</li>
+                            <li>Provide easy access for retail investors</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Managed Futures Funds</div>
+                        <p>Commodity trading advisers (CTAs) are actively managed funds. Some managers concentrate on specific sectors (e.g., agricultural commodities), while others are more diversified.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Structure Options:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Limited Partnerships:</strong> Fees like those of hedge funds with restrictions on the number, net worth, and liquidity of the investors</li>
+                            <li><strong>Mutual Fund Structure:</strong> Shares that are publicly traded so retail investors can benefit from professional management. This structure allows a lower minimum investment and offers greater liquidity than a limited partnership structure</li>
+                            <li><strong>Separately Managed Accounts (SMAs):</strong> Appropriate for larger investors who may require custom portfolios based on their individual preferences and needs</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Specialized Commodity Funds</div>
+                        <p>Specialized funds in specific commodity sectors can be organized under any of the structures discussed and focus on commodities such as:</p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Oil and gas</li>
+                            <li>Grains</li>
+                            <li>Precious metals</li>
+                            <li>Industrial metals</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="valuation">
+                <span class="los-header">Commodity Valuation</span>
+                <div class="content-body">
+                    <p>Wheat today and wheat six months from today are different products. Purchasing the commodity today will give the buyer the use of it if needed, while contracting for wheat to be delivered six months from today avoids storage costs (warehouse cost, insurance, and spoilage) and having cash tied up.</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Futures Price Equation (Approximate)</div>
+                        <div style="margin-top: 1rem;">
+                            Futures Price ≈ Spot Price × (1 + Risk-Free Rate) + Storage Costs − Convenience Yield
+                        </div>
+                    </div>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Futures Price Equation (Alternative Form)</div>
+                        <div style="margin-top: 1rem;">
+                            Futures Price = Spot Price + Net Cost of Carry
+                        </div>
+                        <div style="margin-top: 1.5rem; font-size: 0.95rem;">
+                            <strong>Where:</strong><br>
+                            Net Cost of Carry = Cost of Capital + Storage Cost − Convenience Yield
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Convenience Yield</div>
+                        <p><strong>Convenience yield</strong> is the nonmonetary value of having a physical commodity for use over the period of a futures contract.</p>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Market Conditions:</strong></p>
+
+                    <div class="category-box">
+                        <div class="category-title">Contango</div>
+                        <p>When there is little or no convenience yield, the net cost of carry will be <strong>positive</strong>, and futures prices will be <strong>higher than spot prices</strong>.</p>
+                        <p style="margin-top: 0.8rem; font-style: italic; color: var(--vibrant-green);"><strong>Impact:</strong> Contango decreases the return of long-only investors.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Backwardation</div>
+                        <p>When the convenience yield is high, the net cost of carry will be <strong>negative</strong>, and futures prices will be <strong>less than spot prices</strong>.</p>
+                        <p style="margin-top: 0.8rem; font-style: italic; color: var(--vibrant-green);"><strong>Impact:</strong> Backwardation increases the return of long-only investors.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-c">
+                <span class="los-header">LOS 82.c</span>
+                <span class="los-requirement">Analyze sources of risk, return, and diversification among natural resource investments.</span>
+                <div class="content-body">
+                    
+                    <div class="category-box">
+                        <div class="category-title">Commodity Prices and Supply-Demand Dynamics</div>
+                        <p>Spot prices for commodities are a function of supply and demand:</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Demand Factors:</strong></p>
+                        <ul>
+                            <li>Value of the commodity to end users</li>
+                            <li>Global economic conditions</li>
+                        </ul>
+
+                        <p style="margin-top: 1rem;"><strong>Supply Factors:</strong></p>
+                        <ul>
+                            <li>Production levels</li>
+                            <li>Storage costs</li>
+                            <li>Existing inventories</li>
+                        </ul>
+
+                        <div class="highlight-quote" style="margin-top: 1rem;">
+                            For many commodities, supply is inelastic in the short run because of long lead times to alter production levels (e.g., drill oil wells, plant crops, or decide to plant less of them). As a result, commodity prices can be volatile when demand changes significantly over the economic cycle, or when there are supply shocks such as natural disasters.
+                        </div>
+                    </div>
+
+                    <p><strong>Agricultural Commodity Risks:</strong></p>
+                    <ul>
+                        <li>Production can be significantly affected by <strong>weather</strong> and <strong>plant disease</strong></li>
+                        <li>High prices when production is low</li>
+                        <li>Low prices when production is high</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>Extractive Commodities:</strong></p>
+                    <p>Costs of extracting oil and minerals increase as more expensive methods or more remote areas are used.</p>
+
+                    <p style="margin-top: 2rem;"><strong>Forecasting and Analysis:</strong></p>
+                    <ul>
+                        <li><strong>Commodity Producers</strong> analyze economic events, government policy, and forecasts of future supply to estimate future needs</li>
+                        <li><strong>Investors</strong> analyze inventory levels, forecasts of production, changes in government policy, and expectations of economic growth to forecast commodity prices</li>
+                    </ul>
+
+                    <div class="highlight-quote">
+                        <strong>Returns and Volatility:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li>In recent decades, returns and the volatility of returns have been <strong>higher for commodities</strong> than for global stocks or bonds</li>
+                            <li><strong>Timberland and farmland</strong> also have higher average returns, but with lower volatility than global stocks (but similar volatility to global bonds)</li>
+                            <li>Speculators can earn high returns over short periods when their expectations about short-term commodity price movements are correct</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Diversification Benefits:</strong></p>
+
+                    <div class="category-box">
+                        <div class="category-title">Portfolio Diversification</div>
+                        <p>Historically, correlations of commodity returns with the returns of global equities and global bonds have been low. As a result, adding commodities to a portfolio of traditional assets can provide diversification benefits.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Inflation Hedge</div>
+                        <p>Because commodity prices tend to move with inflation rates, holding commodities can act as a hedge of inflation risk.</p>
+                        <ul style="margin-top: 0.8rem;">
+                            <li>During periods of <strong>high inflation</strong>, commodities outperform both stocks and bonds</li>
+                            <li>During periods of <strong>low inflation</strong>, commodities underperform both stocks and bonds</li>
+                        </ul>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Unique Risk Factors</div>
+                        <p>Commodity prices are more sensitive to geopolitical and weather-related risk factors compared to traditional asset classes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="quiz">
+                <span class="los-header">MODULE QUIZ 82.1</span>
+                <div class="content-body">
+                    <div class="quiz-box">
+                        <div class="quiz-title">Test Your Knowledge</div>
+                        
+                        <div class="quiz-question">
+                            <div class="question-number">Question 1</div>
+                            <p>Which of the following is most likely an attribute of timberland and farmland?</p>
+                            <ol type="A" class="answer-options">
+                                <li>There is a flexibility option to increase output when market prices are high.</li>
+                                <li>They both cater to institutional investors.</li>
+                                <li>The investment is relatively illiquid.</li>
+                            </ol>
+                            <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 4px;">
+                                <strong style="color: var(--vibrant-green);">Answer: C</strong>
+                                <p style="margin-top: 0.5rem;">Timberland and farmland are relatively illiquid. While timberland mostly caters to institutional investors due to the large investment required, most farms are family owned (individual investors). Only timberland enjoys the flexibility option, whereby the trees can be cut when the market price of timber is high. Farm products need to be harvested when ready.</p>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question">
+                            <div class="question-number">Question 2</div>
+                            <p>Which of the following is least likely when net cost of carry for a commodity is negative?</p>
+                            <ol type="A" class="answer-options">
+                                <li>Futures prices will be in backwardation.</li>
+                                <li>Futures prices will be in contango.</li>
+                                <li>Long-only investors will generally earn a higher return.</li>
+                            </ol>
+                            <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 4px;">
+                                <strong style="color: var(--vibrant-green);">Answer: B</strong>
+                                <p style="margin-top: 0.5rem;">When the cost of carry is negative, futures prices will be lower than the spot prices, which is called backwardation. Under backwardation, long-only investors will generally earn a higher return.</p>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question">
+                            <div class="question-number">Question 3</div>
+                            <p>Which of the following is least accurate about commodity returns?</p>
+                            <ol type="A" class="answer-options">
+                                <li>Returns and volatility have been higher for commodities than for stocks or bonds.</li>
+                                <li>Timberland and farmland returns have lower volatility as compared to global stock returns.</li>
+                                <li>Because commodity prices tend to have negative correlation with inflation rates, holding commodities can act as a hedge of inflation risk.</li>
+                            </ol>
+                            <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 4px;">
+                                <strong style="color: var(--vibrant-green);">Answer: C</strong>
+                                <p style="margin-top: 0.5rem;">Because commodity prices tend to move with inflation rates (positive correlation), holding commodities can act as a hedge of inflation risk.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="key-concepts">
+                <span class="los-header">KEY CONCEPTS</span>
+                <div class="content-body">
+                    <div class="key-concepts-box">
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 82.a</div>
+                            <p>Returns on farmland and timberland are driven by changes in land prices and prices for the underlying output. Risks of investing in farmland and timberland include low liquidity, variable cash flows that depend on weather, and potential losses from natural disasters.</p>
+                            <p style="margin-top: 0.8rem;">Raw land, farmland, and timberland are all illiquid investments with value primarily driven by location. Farmland is primarily held by individuals, while institutions are most likely investors in raw land and timberland.</p>
+                            <p style="margin-top: 0.8rem;">Agricultural crops (including trees) consume carbon, making them attractive to investors with an ESG focus on climate change.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 82.b</div>
+                            <p>Natural resource investments include commodities, farmland, and timberland. Exposure to commodity prices is most commonly achieved with derivatives.</p>
+                            <p style="margin-top: 0.8rem;">Other methods of exposure include commodity ETFs, managed futures funds (such as CTAs), and specialized funds in specific commodity sectors.</p>
+                            <p style="margin-top: 0.8rem;"><strong>Futures Price Equation:</strong></p>
+                            <p style="margin-top: 0.3rem; font-family: 'Courier New', monospace;">Futures Price = Spot Price + Net Cost of Carry</p>
+                            <p style="margin-top: 0.5rem;">When the convenience yield is sufficiently high (low), net cost of carry is negative (positive), a situation known as backwardation (contango). Contango decreases the return of long-only investors, while backwardation increases it.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 82.c</div>
+                            <p>Returns on farmland and timberland include sales of the products raised on the land. Timberland returns also include price changes on the land, which depend on expected lumber prices and how much timber has been harvested. Farmland returns also depend on land price changes, changes in farm commodity prices, and the quality and quantity of the crops produced.</p>
+                            <p style="margin-top: 0.8rem;">Commodity returns have low correlation with traditional asset classes and provide diversification benefits as well as a hedge against inflation.</p>
+                            <p style="margin-top: 0.8rem;">In recent decades, returns and volatility have been higher for commodities than for global stocks or bonds. Timberland and farmland have higher average returns but with lower volatility than global stocks.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="doc-footer">
+                PROJECT BY <a href="https://www.linkedin.com/in/sahil-gaikwad-1953b0259/" target="_blank">SAHIL GAIKWAD</a>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:var(--vibrant-green); margin-bottom: 1rem;">Candidate Excellence</h2>
+            <p style="margin-bottom: 2rem; line-height: 1.8;">"This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality."</p>
+            <p style="font-weight: 800; letter-spacing: 2px;">BY SAHIL GAIKWAD</p>
+            <div onclick="closeModals()" style="margin-top: 2rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ DISMISS ]</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="calModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="calTitle" style="color:var(--vibrant-green); margin-bottom: 1rem;">Date</h2>
+            <p id="calDate" style="font-weight: 800; margin-bottom: 1.5rem;"></p>
+            <textarea style="width:100%; height:80px; padding:10px; border: 1px solid var(--border-color); color:inherit; background:transparent;" placeholder="Enter notes..."></textarea>
+            <div onclick="closeModals()" style="margin-top: 1rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ SAVE ]</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function openAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
+        function openCalendar() { 
+            document.getElementById('calModal').style.display = 'flex'; 
+            document.getElementById('calDate').innerText = new Date().toDateString();
+            document.getElementById('calTitle').innerText = new Date().toLocaleString('default', { month: 'long' });
+        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.height = scrolled + "%";
+
+            const sections = document.querySelectorAll('.los-block, .doc-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

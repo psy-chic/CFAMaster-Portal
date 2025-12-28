@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading 80 | Executive Study Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 260px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            padding-left: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .progress-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 0%;
+            background: var(--vibrant-green);
+            transition: 0.1s;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 4rem;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        }
+
+        .nav-controls {
+            position: fixed; top: 25px; right: 30px;
+            display: flex; gap: 12px; z-index: 1001;
+        }
+
+        .ctrl-btn {
+            width: 45px; height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main);
+            cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .ctrl-btn:hover { background: var(--vibrant-green); color: white; transform: scale(1.1); }
+
+        .doc-header { text-align: center; margin-bottom: 3rem; }
+        h1 { font-size: 2.5rem; margin: 1rem 0; font-weight: 800; }
+        .section-divider { width: 120px; height: 5px; background: var(--vibrant-green); margin: 2rem auto; border-radius: 10px; }
+        
+        .los-block { margin-bottom: 5rem; scroll-margin-top: 100px; }
+        .los-header { font-weight: 800; color: var(--vibrant-green); border-bottom: 1px solid var(--vibrant-green); display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; }
+        .los-requirement { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 1.5rem; font-style: italic; }
+        .content-body { font-family: 'Lora', serif; font-size: 1.05rem; }
+        .content-body p { margin-bottom: 1.2rem; }
+        .content-body ul, .content-body ol { margin-left: 2rem; margin-bottom: 1.2rem; }
+        .content-body li { margin-bottom: 0.5rem; }
+        .content-body strong { color: var(--vibrant-green); }
+        
+        .highlight-quote {
+            border-left: 4px solid var(--vibrant-green);
+            padding: 1.5rem; margin: 2rem 0;
+            background: rgba(16, 185, 129, 0.05);
+            font-style: italic;
+        }
+
+        .category-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--vibrant-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .stage-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stage-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stage-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .stage-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .key-concepts-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .concept-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-footer {
+            margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.8rem; letter-spacing: 2px;
+        }
+        .doc-footer a { color: var(--vibrant-green); text-decoration: none; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box { background: var(--paper-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 90%; max-width: 500px; padding: 3rem; border-radius: 8px; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="sidebar-header">Course Map</div>
+        <ul class="nav-list">
+            <li class="nav-item" data-section="intro"><a href="#intro" class="nav-link">Top of Reading</a></li>
+            <li class="nav-item" data-section="module-intro"><a href="#module-intro" class="nav-link">Module 80.1</a></li>
+            <li class="nav-item" data-section="los-a"><a href="#los-a" class="nav-link">LOS 80.a: Private Equity</a></li>
+            <li class="nav-item" data-section="pe-categories"><a href="#pe-categories" class="nav-link">PE Categories</a></li>
+            <li class="nav-item" data-section="vc-stages"><a href="#vc-stages" class="nav-link">VC Stages</a></li>
+            <li class="nav-item" data-section="exit-strategies"><a href="#exit-strategies" class="nav-link">Exit Strategies</a></li>
+            <li class="nav-item" data-section="pe-risk-return"><a href="#pe-risk-return" class="nav-link">PE Risk & Return</a></li>
+            <li class="nav-item" data-section="los-b"><a href="#los-b" class="nav-link">LOS 80.b: Private Debt</a></li>
+            <li class="nav-item" data-section="los-c"><a href="#los-c" class="nav-link">LOS 80.c: Diversification</a></li>
+            <li class="nav-item" data-section="key-concepts"><a href="#key-concepts" class="nav-link">Key Concepts</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="nav-controls">
+            <a href="dashboard.html" class="ctrl-btn" title="Back to Dashboard"><i class="fa-solid fa-home"></i></a>
+            <div class="ctrl-btn" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+            <div class="ctrl-btn" onclick="openCalendar()"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="ctrl-btn" onclick="openAbout()"><i class="fa-solid fa-user-tie"></i></div>
+        </div>
+
+        <div class="document-container">
+            <header class="doc-header" id="intro">
+                <span style="font-weight: 800; font-size: 0.8rem; letter-spacing: 4px; color: var(--vibrant-green);">READING 80</span>
+                <h1>Investments in Private Capital: Equity and Debt</h1>
+                <div class="section-divider"></div>
+            </header>
+
+            <section class="los-block" id="module-intro">
+                <span class="los-header">MODULE 80.1</span>
+                <span class="los-requirement">Private Capital</span>
+                <div class="content-body">
+                    <p>Private capital is the funding provided to companies that is not raised from the public markets. Private capital includes private equity and private debt. This module explores the features, investment characteristics, and diversification benefits of private capital investments.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-a">
+                <span class="los-header">LOS 80.a</span>
+                <span class="los-requirement">Explain features of private equity and its investment characteristics.</span>
+                <div class="content-body">
+                    <p><strong>Private equity</strong> is equity capital raised from sources other than the public markets. Private equity funds usually invest in private companies or public companies that they plan to take private (leveraged buyout funds) or in early in companies' lives (venture capital funds). The companies in which a private equity fund invests are called its <strong>portfolio companies</strong>.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="pe-categories">
+                <span class="los-header">Private Equity Investment Categories</span>
+                <div class="content-body">
+                    
+                    <div class="category-box">
+                        <div class="category-title">Leveraged Buyout (LBO) Funds</div>
+                        <p>A popular type of private equity fund is the <strong>leveraged buyout (LBO) fund</strong>, which acquires public companies with a large percentage of the purchase price financed by debt. LBOs are a way for a company to "go private" because after the transaction, the target company's stock is no longer publicly traded.</p>
+                        
+                        <p style="margin-top: 1rem;">In an LBO, the private equity firm seeks to add value by improving or restructuring the portfolio company's operations to increase its sales, profits, and cash flows. The cash flows can then be used to service and pay down the debt taken to fund the acquisition.</p>
+
+                        <p style="margin-top: 1rem;"><strong>Two Types of LBOs:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Management Buyouts (MBOs):</strong> The portfolio company's existing management team participates in the purchase.</li>
+                            <li><strong>Management Buy-ins (MBIs):</strong> The private equity manager replaces the portfolio company's current management team with a new team.</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Venture Capital (VC) Funds</div>
+                        <p><strong>Venture capital (VC) funds</strong> provide financing to companies in the early stages of their development. VC funds typically receive common equity interest in the portfolio companies, but they may also get convertible debt or convertible preferred stock. Convertible securities help to align the interests of the VC investors and the start-up firm, in that both want to increase the value of the firm, but give the VC investors a higher priority of claims in the event of liquidation.</p>
+
+                        <p style="margin-top: 1rem;">VC investment involves a high level of risk, but the returns can be substantial. VC investors are actively involved in developing their portfolio companies, often sitting on the boards or filling key management roles.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Minority Equity Investing</div>
+                        <p>A private equity firm that engages in <strong>minority equity investing</strong> buys a less-than-controlling interest in public companies that are looking for capital with which to expand.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Private Investment in Public Equity (PIPE):</strong> One way to make such investments is through a private investment in public equity, a private offering to institutional investors that allows a publicly traded firm to raise capital more quickly and cost effectively than a public offering, with fewer disclosures and lower transaction costs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="vc-stages">
+                <span class="los-header">Venture Capital Investment Stages</span>
+                <div class="content-body">
+                    <p>We can classify VC investments by the portfolio company's stage of development:</p>
+
+                    <div class="stage-box">
+                        <div class="stage-item">
+                            <div class="stage-title">1. Formative Stage</div>
+                            <p>The formative stage refers to investments made during a firm's earliest period and comprises three different phases:</p>
+                            
+                            <ul style="margin-top: 1rem;">
+                                <li><strong>Pre-seed Capital or Angel Investing:</strong> Capital provided at the idea stage. The investment funds are used for business plans and assessing market potential. The amount of financing is usually small, coming from individuals ("angels") rather than VC funds.</li>
+                                
+                                <li><strong>Seed-Stage Financing or Seed Capital:</strong> Generally supports product development, marketing, and market research. This is the first stage at which VC funds usually invest.</li>
+                                
+                                <li><strong>Early-Stage Financing or Start-up Stage Financing:</strong> Refers to investments made to fund operations in the lead-up to production and sales.</li>
+                            </ul>
+                        </div>
+
+                        <div class="stage-item">
+                            <div class="stage-title">2. Later-Stage Financing</div>
+                            <p><strong>Later-stage financing</strong> or <strong>expansion venture capital</strong> comes after production and sales have begun. Investment funds provided at this stage are used to support initial growth, expansion, product improvement, or marketing. In this stage, the owners (typically the founders and managers of the company) often sell control of the company to VC investors.</p>
+                        </div>
+
+                        <div class="stage-item">
+                            <div class="stage-title">3. Mezzanine-Stage Financing</div>
+                            <p><strong>Mezzanine-stage financing</strong> refers to capital provided to prepare the firm for an initial public offering (IPO). The term mezzanine stage is used to indicate the timing of the financing rather than the method. A similar term, mezzanine financing, refers to hybrids of equity and debt, such as convertible securities. Mezzanine-stage financing can use these, but more often, it consists of equity or short-term debt.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="exit-strategies">
+                <span class="los-header">Private Equity Exit Strategies</span>
+                <div class="content-body">
+                    <p>Private equity firms typically add value to young companies, then sell them, with an average holding period of five years. Funds have several methods of exiting an investment in a portfolio company:</p>
+
+                    <div class="category-box">
+                        <div class="category-title">1. Trade Sale</div>
+                        <p>Sell a portion of the private company to a strategic buyer via direct sale or auction.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Advantages:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>The strategic investor typically pays a premium to realize synergies with an existing business</li>
+                            <li>Faster execution compared with an IPO</li>
+                            <li>Lower transaction costs compared with an IPO</li>
+                        </ul>
+
+                        <p style="margin-top: 1rem;"><strong>Disadvantages:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Potential resistance from the portfolio company's management and employees</li>
+                            <li>Limited universe of potential buyers</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">2. Public Listing</div>
+                        <p>Listing on a stock exchange can take place through an IPO, a direct listing, or a special purpose acquisition company:</p>
+
+                        <div style="margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--vibrant-green);">
+                            <p><strong>Initial Public Offering (IPO)</strong></p>
+                            <p style="margin-top: 0.5rem;">IPOs are the most common method of public listing, using investment banks to underwrite the offering.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Advantages:</strong></p>
+                            <ul style="margin-top: 0.3rem;">
+                                <li>Typically realize a higher price for the portfolio company</li>
+                                <li>May improve visibility to investors and the public, which can be positive for the value of shares that the private equity fund retains</li>
+                            </ul>
+
+                            <p style="margin-top: 0.8rem;"><strong>Disadvantages:</strong></p>
+                            <ul style="margin-top: 0.3rem;">
+                                <li>High transaction and compliance costs</li>
+                                <li>Might not always be received favorably by the investing public</li>
+                            </ul>
+
+                            <p style="margin-top: 0.8rem;"><strong>Best suited for:</strong> Large firms in growing industries that have stable finances and clear strategies.</p>
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--vibrant-green);">
+                            <p><strong>Direct Listing</strong></p>
+                            <p style="margin-top: 0.5rem;">A less frequently used alternative in which the stock of the company is floated on the public market directly without underwriters. This decreases the cost of the transaction, but does not raise new capital for the portfolio company.</p>
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--vibrant-green);">
+                            <p><strong>Special Purpose Acquisition Company (SPAC)</strong></p>
+                            <p style="margin-top: 0.5rem;">A SPAC is an entity (sometimes referred to as a blank check company) set up solely to raise capital that it will use to acquire an unspecified private company within a stated time period; otherwise, it must return the capital to investors.</p>
+
+                            <p style="margin-top: 0.8rem;"><strong>Advantages:</strong></p>
+                            <ul style="margin-top: 0.3rem;">
+                                <li>Can be more flexible than an IPO</li>
+                                <li>Reduces uncertainty about the valuation of the portfolio company</li>
+                                <li>Provides access to investors who transact regularly with the sponsors</li>
+                            </ul>
+
+                            <p style="margin-top: 0.8rem;"><strong>Disadvantages:</strong></p>
+                            <ul style="margin-top: 0.3rem;">
+                                <li>Dilutive effects from SPAC shares and warrants</li>
+                                <li>Spread between the value of the SPAC and the value of the acquired company</li>
+                                <li>Deal risk in the acquisition</li>
+                                <li>Stockholder overhang from SPAC shareholders selling shares after the acquisition is announced</li>
+                                <li>Increasing scrutiny from securities regulators</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">3. Recapitalization</div>
+                        <p>The company issues debt to fund a dividend distribution to equity holders. This is not an exit, in that the fund still controls the company, but a recapitalization allows the private equity fund to extract money from the company to pay its investors.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">4. Secondary Sale</div>
+                        <p>Sell a portfolio company to another private equity firm or a group of investors.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">5. Write-off/Liquidation</div>
+                        <p>Reassess and take losses from an unsuccessful investment in a portfolio company.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="pe-risk-return">
+                <span class="los-header">Risk and Return From Private Equity Investments</span>
+                <div class="content-body">
+                    <div class="highlight-quote">
+                        Empirical evidence shows that returns on private equity funds have been higher on average than overall stock returns. However, the standard deviation of private equity returns has been higher than the standard deviation of equity index returns, suggesting higher risk, including illiquidity and leverage risks.
+                    </div>
+
+                    <p><strong>Important Considerations:</strong></p>
+                    <ul>
+                        <li>Private equity indexes typically rely on self-reporting and are subject to <strong>survivorship</strong> and <strong>backfill biases</strong>, both of which lead to overstated returns.</li>
+                        <li>Because portfolio companies are revalued infrequently, measures of volatility and correlation with other investments may be biased downward.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-b">
+                <span class="los-header">LOS 80.b</span>
+                <span class="los-requirement">Explain features of private debt and its investment characteristics.</span>
+                <div class="content-body">
+                    <p><strong>Private debt</strong> refers to various forms of debt provided by investors directly to private entities. Categories of private debt include the following:</p>
+
+                    <div class="category-box">
+                        <div class="category-title">1. Direct Lending</div>
+                        <p>Direct lending refers to loans made directly to a private company without an intermediary. The debt is typically senior and secured, with covenants to protect the lender.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Leveraged Loan:</strong> A loan made by a private debt fund using money borrowed from other sources. That is, the fund's portfolio of loans is leveraged to magnify returns.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">2. Venture Debt</div>
+                        <p>Venture debt is funding that provides VC backing to start-up or early-stage firms that are not yet profitable. Venture debt is often convertible to stock or combined with warrants. Managers of young companies may favor venture debt because it allows them to maintain ownership and control.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">3. Mezzanine Debt</div>
+                        <p>Mezzanine debt is private debt that is subordinated to senior secured debt. Mezzanine debt may have special features, such as conversion rights or warrants, to compensate investors for additional risk.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">4. Distressed Debt</div>
+                        <p>Distressed debt is the debt of mature companies in financial trouble, such as bankruptcy or default. In many cases, the fund becomes active in restructuring the existing debt or making other changes that increase the value of the acquired debt.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Two Types of Distressed Debt Investors:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Some specialize in identifying otherwise good companies with temporary cash flow problems, anticipating that the value of the company and its debt will recover.</li>
+                            <li>Others focus on turnaround situations, acquiring a company's debt with an intent to be active in managing and restructuring the company.</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">5. Unitranche Debt</div>
+                        <p>Unitranche debt combines different classes of debt (secured and unsecured) into a single loan with an interest rate that reflects the blend of debt classes. The resulting debt typically ranks between senior and subordinated debt.</p>
+                    </div>
+
+                    <div class="highlight-quote">
+                        <strong>Characteristics of Private Debt:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li>Private debt investments typically provide a higher rate of return relative to traditional bonds to compensate investors for higher risk and a lack of liquidity.</li>
+                            <li>Investors may also benefit from increased portfolio diversification because private debt returns have relatively low correlations with other traditional investments.</li>
+                            <li>The interest rate of private debt is usually set relative to a reference rate, such as the Secured Overnight Financing Rate (SOFR). Therefore, the rate changes when the reference rate fluctuates due to changes to the interest rate environment.</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 1.5rem;"><strong>Risk Considerations:</strong></p>
+                    <p>The potential for higher returns of private debt is associated with higher risk, including illiquidity and default risk. Private debt investing requires specialized knowledge about the structure of the debt, the borrower's life cycle phase, and the features of the underlying assets for secured lending.</p>
+
+                    <p style="margin-top: 1rem;">Senior private debt has less risk and steadier yields than private mezzanine debt, but mezzanine debt offers greater upside potential.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-c">
+                <span class="los-header">LOS 80.c</span>
+                <span class="los-requirement">Describe the diversification benefits that private capital can provide.</span>
+                <div class="content-body">
+                    <p>Private capital investments can provide some diversification benefit to a portfolio of traditional investments. Empirical evidence indicates that correlations of private capital fund index returns with public market index returns range from 0.63 to 0.83.</p>
+
+                    <div class="highlight-quote">
+                        <strong>Vintage Year:</strong> Each private equity fund has a vintage year, which is the year the fund made its first investment. The performance of a fund is greatly influenced by its vintage year and the phase of the business cycle in that year.
+                    </div>
+
+                    <p><strong>Vintage Year and Business Cycle Impact:</strong></p>
+                    <ul>
+                        <li><strong>Funds that begin investing during a business cycle expansion</strong> are likely to earn higher rates of return if they specialize in early-stage companies.</li>
+                        <li><strong>Funds that begin investing during business cycle contractions</strong> are likely to earn higher rates of return if they specialize in distressed companies.</li>
+                        <li><strong>Key Takeaway:</strong> Investors in private capital should diversify across vintage years.</li>
+                    </ul>
+
+                    <div class="stage-box">
+                        <div class="stage-title">Risk and Return Profiles by Category</div>
+                        <p>Risk and return profiles vary among categories of private capital, ranked from highest to lowest risk and return:</p>
+                        <ol style="margin-top: 1rem;">
+                            <li>Private Equity (highest risk and return)</li>
+                            <li>Mezzanine Debt</li>
+                            <li>Unitranche Debt</li>
+                            <li>Senior Direct Lending</li>
+                            <li>Senior Real Estate Debt</li>
+                            <li>Infrastructure Debt (lowest risk and return)</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="key-concepts">
+                <span class="los-header">KEY CONCEPTS</span>
+                <div class="content-body">
+                    <div class="key-concepts-box">
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 80.a</div>
+                            <p>Private equity funds usually invest in the equity of private companies or companies wanting to become private, often financing their assets with high levels of debt.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Venture capital funds</strong> provide capital to companies early in their development. Stages of venture capital investing include the formative stage (composed of the angel investing, seed, and early stages), the later stage (expansion), and the mezzanine stage (prepare for IPO).</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Leveraged buyouts</strong> include management buyouts, in which the existing management team is involved in the purchase, and management buy-ins, in which an external management team replaces the existing management.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Developmental capital or minority equity investing</strong> refers to providing capital for business growth or restructuring. The firms financed may be public or private. In the case of public companies, such financing is referred to as a private investment in public equity (PIPE).</p>
+                            
+                            <p style="margin-top: 0.8rem;">Methods for exiting investments in portfolio companies include trade sale (sell to a competitor or another strategic buyer), IPO (sell some or all shares to investors), recapitalization (issue portfolio company debt), secondary sale (sell to another private equity firm or other investors), or write-off/liquidation.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 80.b</div>
+                            <p>Private debt refers to lending to private entities. Private debt investments include direct lending, venture debt, mezzanine loans, distressed debt, and unitranche debt.</p>
+                            
+                            <p style="margin-top: 0.8rem;">Private debt investing requires specialized knowledge about the structure of the debt, the borrower's life cycle phase, and the features of the underlying assets.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 80.c</div>
+                            <p>Private capital investments can provide some diversification benefit to a portfolio of traditional investments because their correlations of returns with traditional investments are relatively low.</p>
+                            
+                            <p style="margin-top: 0.8rem;">Investors in private capital should diversify across vintage years. Funds that begin investing during a business cycle expansion are likely to earn higher rates of return if they specialize in early-stage companies. Funds that begin investing during business cycle contractions are likely to earn higher rates of return if they specialize in distressed companies.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="doc-footer">
+                PROJECT BY <a href="https://www.linkedin.com/in/sahil-gaikwad-1953b0259/" target="_blank">SAHIL GAIKWAD</a>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:var(--vibrant-green); margin-bottom: 1rem;">Candidate Excellence</h2>
+            <p style="margin-bottom: 2rem; line-height: 1.8;">"This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality."</p>
+            <p style="font-weight: 800; letter-spacing: 2px;">BY SAHIL GAIKWAD</p>
+            <div onclick="closeModals()" style="margin-top: 2rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ DISMISS ]</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="calModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="calTitle" style="color:var(--vibrant-green); margin-bottom: 1rem;">Date</h2>
+            <p id="calDate" style="font-weight: 800; margin-bottom: 1.5rem;"></p>
+            <textarea style="width:100%; height:80px; padding:10px; border: 1px solid var(--border-color); color:inherit; background:transparent;" placeholder="Enter notes..."></textarea>
+            <div onclick="closeModals()" style="margin-top: 1rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ SAVE ]</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function openAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
+        function openCalendar() { 
+            document.getElementById('calModal').style.display = 'flex'; 
+            document.getElementById('calDate').innerText = new Date().toDateString();
+            document.getElementById('calTitle').innerText = new Date().toLocaleString('default', { month: 'long' });
+        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.height = scrolled + "%";
+
+            const sections = document.querySelectorAll('.los-block, .doc-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

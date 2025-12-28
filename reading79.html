@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading 79 | Executive Study Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 260px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            padding-left: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .progress-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 0%;
+            background: var(--vibrant-green);
+            transition: 0.1s;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 4rem;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        }
+
+        .nav-controls {
+            position: fixed; top: 25px; right: 30px;
+            display: flex; gap: 12px; z-index: 1001;
+        }
+
+        .ctrl-btn {
+            width: 45px; height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main);
+            cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .ctrl-btn:hover { background: var(--vibrant-green); color: white; transform: scale(1.1); }
+
+        .doc-header { text-align: center; margin-bottom: 3rem; }
+        h1 { font-size: 2.5rem; margin: 1rem 0; font-weight: 800; }
+        .section-divider { width: 120px; height: 5px; background: var(--vibrant-green); margin: 2rem auto; border-radius: 10px; }
+        
+        .los-block { margin-bottom: 5rem; scroll-margin-top: 100px; }
+        .los-header { font-weight: 800; color: var(--vibrant-green); border-bottom: 1px solid var(--vibrant-green); display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; }
+        .los-requirement { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 1.5rem; font-style: italic; }
+        .content-body { font-family: 'Lora', serif; font-size: 1.05rem; }
+        .content-body p { margin-bottom: 1.2rem; }
+        .content-body ul, .content-body ol { margin-left: 2rem; margin-bottom: 1.2rem; }
+        .content-body li { margin-bottom: 0.5rem; }
+        .content-body strong { color: var(--vibrant-green); }
+        
+        .highlight-quote {
+            border-left: 4px solid var(--vibrant-green);
+            padding: 1.5rem; margin: 2rem 0;
+            background: rgba(16, 185, 129, 0.05);
+            font-style: italic;
+        }
+
+        .formula-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .formula-label {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1rem;
+            font-family: 'Public Sans', sans-serif;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .example-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculation-step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--vibrant-green);
+            border-radius: 4px;
+        }
+
+        .j-curve-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .j-curve-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .phase-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--vibrant-green);
+        }
+
+        .axis-label {
+            font-size: 0.9rem;
+            fill: var(--text-muted);
+        }
+
+        .key-concepts-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .concept-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .note-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .note-title {
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .doc-footer {
+            margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.8rem; letter-spacing: 2px;
+        }
+        .doc-footer a { color: var(--vibrant-green); text-decoration: none; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box { background: var(--paper-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 90%; max-width: 500px; padding: 3rem; border-radius: 8px; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="sidebar-header">Course Map</div>
+        <ul class="nav-list">
+            <li class="nav-item" data-section="intro"><a href="#intro" class="nav-link">Top of Reading</a></li>
+            <li class="nav-item" data-section="module-intro"><a href="#module-intro" class="nav-link">Module 79.1</a></li>
+            <li class="nav-item" data-section="los-a"><a href="#los-a" class="nav-link">LOS 79.a: Performance Appraisal</a></li>
+            <li class="nav-item" data-section="cash-flows"><a href="#cash-flows" class="nav-link">Timing of Cash Flows</a></li>
+            <li class="nav-item" data-section="leverage"><a href="#leverage" class="nav-link">Use of Leverage</a></li>
+            <li class="nav-item" data-section="valuation"><a href="#valuation" class="nav-link">Valuation</a></li>
+            <li class="nav-item" data-section="los-b"><a href="#los-b" class="nav-link">LOS 79.b: Return Calculations</a></li>
+            <li class="nav-item" data-section="examples"><a href="#examples" class="nav-link">Examples</a></li>
+            <li class="nav-item" data-section="key-concepts"><a href="#key-concepts" class="nav-link">Key Concepts</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="nav-controls">
+            <a href="dashboard.html" class="ctrl-btn" title="Back to Dashboard"><i class="fa-solid fa-home"></i></a>
+            <div class="ctrl-btn" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+            <div class="ctrl-btn" onclick="openCalendar()"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="ctrl-btn" onclick="openAbout()"><i class="fa-solid fa-user-tie"></i></div>
+        </div>
+
+        <div class="document-container">
+            <header class="doc-header" id="intro">
+                <span style="font-weight: 800; font-size: 0.8rem; letter-spacing: 4px; color: var(--vibrant-green);">READING 79</span>
+                <h1>Alternative Investment Performance and Returns</h1>
+                <div class="section-divider"></div>
+            </header>
+
+            <section class="los-block" id="module-intro">
+                <span class="los-header">MODULE 79.1</span>
+                <span class="los-requirement">Performance Appraisal and Return Calculations</span>
+                <div class="content-body">
+                    <p>This module examines the unique challenges in evaluating the performance of alternative investments and calculating returns both before and after fees.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-a">
+                <span class="los-header">LOS 79.a</span>
+                <span class="los-requirement">Describe the performance appraisal of alternative investments.</span>
+                <div class="content-body">
+                    <p>Alternative investments are typically exposed to greater risks than unleveraged long-only traditional investments. These additional risks arise from the following:</p>
+                    <ul>
+                        <li>Timing of cash flows over an investment's life cycle</li>
+                        <li>Use of leverage by fund managers</li>
+                        <li>Valuation of investments that may or may not have observable market prices</li>
+                        <li>Complexity of fees, taxes, and accounting</li>
+                    </ul>
+
+                    <div class="highlight-quote">
+                        Ideally, returns on alternative investments should be adjusted for these risks, although that may be difficult in practice. It is clear, however, that evaluating alternative investment returns (or expected returns) without considering these additional risks would be naïve and possibly misleading.
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="cash-flows">
+                <span class="los-header">Timing of Cash Flows</span>
+                <div class="content-body">
+                    <p>Alternative investments often have a life cycle that exhibits three phases:</p>
+
+                    <ol>
+                        <li><strong>Capital Commitment Phase:</strong> A fund's managers are identifying investments and making capital calls from the partners. Recall that limited partners commit a stated amount of capital that they will invest, but they do not necessarily deliver the entire amount immediately in cash. Managers make capital calls as they identify investments for which they require cash. Because of these cash outflows and the long-term nature of the typical investments, returns tend to be negative during the capital commitment phase.</li>
+                        
+                        <li><strong>Capital Deployment Phase:</strong> The managers fund, and often involve themselves directly in, the firms or projects in which they invest. Returns typically remain negative in this phase, especially if the investments are in start-up companies or troubled firms that the managers are attempting to turn around.</li>
+                        
+                        <li><strong>Capital Distribution Phase:</strong> If the fund's investments succeed and begin to generate income and cash flows, the fund enters a capital distribution phase during which its returns turn positive and accelerate.</li>
+                    </ol>
+
+                    <div class="j-curve-container">
+                        <div class="j-curve-title">Figure 79.1: J-Curve Effect</div>
+                        <div class="chart-container">
+                            <svg class="chart-svg" viewBox="0 0 600 300">
+                                <!-- Axes -->
+                                <line x1="50" y1="150" x2="550" y2="150" stroke="var(--text-muted)" stroke-width="2"/>
+                                <line x1="50" y1="20" x2="50" y2="280" stroke="var(--text-muted)" stroke-width="2"/>
+                                
+                                <!-- Axis labels -->
+                                <text x="300" y="295" class="axis-label" text-anchor="middle">Time</text>
+                                <text x="20" y="150" class="axis-label" text-anchor="middle" transform="rotate(-90 20 150)">Returns</text>
+                                
+                                <!-- Zero line label -->
+                                <text x="35" y="155" style="fill: var(--text-muted); font-size: 12px;">0</text>
+                                
+                                <!-- J-Curve -->
+                                <path d="M 50 150 Q 120 220, 200 200 Q 280 180, 350 100 Q 420 40, 550 30" 
+                                      fill="none" 
+                                      stroke="var(--vibrant-green)" 
+                                      stroke-width="3"/>
+                                
+                                <!-- Phase regions -->
+                                <rect x="50" y="20" width="150" height="260" fill="rgba(255, 99, 71, 0.05)"/>
+                                <rect x="200" y="20" width="150" height="260" fill="rgba(255, 193, 7, 0.05)"/>
+                                <rect x="350" y="20" width="200" height="260" fill="rgba(16, 185, 129, 0.05)"/>
+                                
+                                <!-- Phase labels -->
+                                <text x="125" y="270" class="phase-label" text-anchor="middle">Capital</text>
+                                <text x="125" y="285" class="phase-label" text-anchor="middle">Commitment</text>
+                                
+                                <text x="275" y="270" class="phase-label" text-anchor="middle">Capital</text>
+                                <text x="275" y="285" class="phase-label" text-anchor="middle">Deployment</text>
+                                
+                                <text x="450" y="270" class="phase-label" text-anchor="middle">Capital</text>
+                                <text x="450" y="285" class="phase-label" text-anchor="middle">Distribution</text>
+                            </svg>
+                        </div>
+                        <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 1rem;">
+                            A J-curve effect reflects the norm of negative returns in the capital commitment phase, followed by increasing returns in the capital deployment phase and maximum returns in the capital distribution phase.
+                        </p>
+                    </div>
+
+                    <p>Given the variability of cash flows over a fund's life and the importance of management decisions in the timing and magnitude of after-tax cash flows, an IRR over the life of a fund is the most appropriate measure of after-tax investment performance. (Recall from Quantitative Methods that a money-weighted rate of return, which is an IRR, is appropriate when a manager controls the timing of cash inflows and outflows.) A drawback to using IRRs is that they rest on assumptions about the cost of capital for cash outflows and the reinvestment rate for cash inflows.</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Multiple of Invested Capital (Money Multiple)</div>
+                        <div style="margin-top: 1rem;">
+                            Multiple of Invested Capital = <br><br>
+                            (Total Capital Returned + Value of Remaining Assets) / Total Capital Paid In
+                        </div>
+                    </div>
+
+                    <p>A simpler measure of investment success is the multiple of invested capital (or money multiple)—the ratio of total capital returned plus the value of any remaining assets, to the total capital paid in over the life of the investment. Because this measure does not consider the timing of cash inflows and outflows, which can affect annual returns on invested capital significantly, it can be considered somewhat naïve.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="leverage">
+                <span class="los-header">Use of Leverage</span>
+                <div class="content-body">
+                    <p>Some alternative investments, particularly hedge funds, use borrowing to magnify their gains (at the risk of magnifying losses). Hedge funds may arrange margin financing with prime brokers or employ leverage by means of derivatives.</p>
+
+                    <p>To state the effect of leverage on returns, consider a fund that can invest the amount V₀ without leverage, and earn the rate of return r. The fund's unleveraged portfolio return (as a money amount) is simply:</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Unleveraged Portfolio Return</div>
+                        <div style="margin-top: 1rem;">
+                            r × V₀
+                        </div>
+                    </div>
+
+                    <p>Now, let's say this fund can borrow the amount V<sub>B</sub> at an interest rate of r<sub>B</sub>, and earn r by investing the proceeds. The fund's leveraged portfolio return (again, as a money amount), after subtracting the interest cost, then becomes:</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Leveraged Portfolio Return (Money Amount)</div>
+                        <div style="margin-top: 1rem;">
+                            r × (V₀ + V<sub>B</sub>) - r<sub>B</sub> × V<sub>B</sub>
+                        </div>
+                    </div>
+
+                    <p>Thus, stated as a rate of return on the initial portfolio value of V₀, the leveraged rate of return is as follows:</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">Leveraged Rate of Return</div>
+                        <div style="margin-top: 1rem;">
+                            r<sub>Leveraged</sub> = r + (V<sub>B</sub> / V₀) × (r - r<sub>B</sub>)
+                        </div>
+                    </div>
+
+                    <div class="highlight-quote">
+                        <strong>Risks of Leverage:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li>Lenders may issue margin calls if a fund's equity position decreases below a certain level. These can result in a fund having to realize losses by closing positions or liquidating investments at unfavorable prices.</li>
+                            <li>If the fund must sell a large position in a security, doing so may depress its price further.</li>
+                            <li>Lenders may limit access to additional borrowing.</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 1rem;">One of the reasons that funds use leverage is that some strategies attempt to exploit relatively small pricing anomalies that might not produce meaningful results without leverage.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="valuation">
+                <span class="los-header">Valuation of Investments</span>
+                <div class="content-body">
+                    <p>As we have discussed, many alternative investments involve illiquid assets that do not trade frequently in transparent markets. While funds must recognize investments at fair value to comply with accounting standards, fair value might rest on assumptions of which an investor in a fund should be aware.</p>
+
+                    <p><strong>Fair Value Hierarchy:</strong></p>
+
+                    <div class="example-box">
+                        <div style="padding: 1rem; border-bottom: 2px solid var(--border-color);">
+                            <strong style="color: var(--vibrant-green);">Level 1</strong>
+                            <p style="margin-top: 0.5rem;">The assets trade in active markets and have quoted prices readily available, such as exchange-traded securities.</p>
+                        </div>
+                        
+                        <div style="padding: 1rem; border-bottom: 2px solid var(--border-color);">
+                            <strong style="color: var(--vibrant-green);">Level 2</strong>
+                            <p style="margin-top: 0.5rem;">The assets do not have readily available quoted prices, but they can be valued based on directly or indirectly observable inputs, such as many derivatives that can be priced using models.</p>
+                        </div>
+                        
+                        <div style="padding: 1rem;">
+                            <strong style="color: var(--vibrant-green);">Level 3</strong>
+                            <p style="margin-top: 0.5rem;">The assets require unobservable inputs to establish a fair value, such as real estate or private equity investments, for which there have been few or no market transactions.</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-quote">
+                        <strong>Important Impact:</strong> Particularly for Level 3 investments, the absence of market activity can result in valuations that remain near their initial cost for long periods. As a result, these values might not reflect the actual exit costs of the investments. Importantly, this relative lack of change in fair values can make reported returns for alternative investments appear higher, less risky, and less correlated with traditional investments than they really are.
+                    </div>
+
+                    <p><strong>Fee Structures:</strong></p>
+                    <p>Fee structures are subject to negotiation (e.g., a limited partner might agree to a higher management fee in exchange for fewer restrictions on redemptions) and may differ depending on how early in a fund's life cycle an investor commits capital. Thus, different investors in the same fund might realize significantly different returns.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-b">
+                <span class="los-header">LOS 79.b</span>
+                <span class="los-requirement">Calculate and interpret alternative investment returns both before and after fees.</span>
+                <div class="content-body">
+                    <p>We have seen how margin calls may require a leveraged fund to exit investments at unfavorable prices and unintended times. A similar risk arises from investor redemptions. The more negative a fund's returns, the more likely investors are to ask the manager to redeem their positions. For this reason, and because of the J-curve effect of negative returns in the early years, alternative investment funds (particularly hedge funds) typically take measures to restrict early redemptions.</p>
+
+                    <p><strong>Redemption Terms:</strong></p>
+                    <ul>
+                        <li><strong>Lockup Period:</strong> The time after initial investment over which limited partners either cannot request redemptions or incur significant fees for redemptions.</li>
+                        <li><strong>Notice Period:</strong> Typically between 30 and 90 days, the amount of time a fund has to fulfill a redemption request. Notice periods allow time for managers to reduce positions in an orderly manner.</li>
+                        <li><strong>Redemption Fees:</strong> Can offset the significant transactions costs when managers redeem shares.</li>
+                        <li><strong>Gate:</strong> Managers may have the discretion to implement a gate that restricts redemptions for a temporary period.</li>
+                    </ul>
+
+                    <p><strong>Customized Terms:</strong></p>
+                    <p>Investors should be aware that other investors may receive terms that differ from those stated in the partnership agreement. Customized fee structures are contained in <strong>side letters</strong> with individual investors detailing how their terms differ from those in the standard offering documents.</p>
+
+                    <p><strong>Fee Negotiation:</strong></p>
+                    <ul>
+                        <li>Although "2 and 20" and "1 and 10" were, at one time, fairly standard fee structures, these continue to be under competitive pressure.</li>
+                        <li>Investors making larger commitments can negotiate lower fees.</li>
+                        <li>There can be a tradeoff between liquidity provisions and fees—investors can negotiate for lower fees or better liquidity (shorter lockups and notice periods).</li>
+                        <li>Hurdle rates, hard versus soft hurdles, and catch-up provisions may also be subject to negotiation.</li>
+                        <li><strong>Founders Class Shares:</strong> Early investors in a fund may receive lower fees or better liquidity terms as an incentive to invest at the fund's inception.</li>
+                        <li><strong>Either-Or Fees:</strong> Annual investor fees can be the maximum of the management fee or the incentive fee.</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Biases in Alternative Investment Returns:</strong></p>
+                    <ul>
+                        <li><strong>Survivorship Bias:</strong> More than 25% of hedge funds fail in the first three years of their existence. An index that does not include failed funds will overstate the returns and understate the risk of hedge funds as an asset class.</li>
+                        <li><strong>Backfill Bias:</strong> Occurs when managers only select their successful funds for inclusion in indexes.</li>
+                        <li><strong>Vintage Year:</strong> One way to address these issues is to compare funds that originated in the same vintage year.</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Return Calculations:</strong></p>
+                    <p>Before-fee returns on alternative investments are calculated the same way we calculate returns on any investment. Calculating after-fee returns simply requires adjustment of the cash flows or values for the various fees involved, typically management and performance fees.</p>
+
+                    <div class="formula-box">
+                        <div class="formula-label">General Partner's Total Fees</div>
+                        <div style="margin-top: 1rem;">
+                            GP Total Fees = Management Fee + Performance Fee<br><br>
+                            = (Management Fee % × AUM) + (Performance Fee % × Gains)
+                        </div>
+                    </div>
+
+                    <div class="formula-box">
+                        <div class="formula-label">After-Fee Return for Investors</div>
+                        <div style="margin-top: 1rem;">
+                            After-Fee Return = <br><br>
+                            [(Ending Value - Fees) / Beginning Value] - 1
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Professor's Note</div>
+                        <p>Because none of these provisions are standard across alternative investment funds, exam questions that require calculations will have to specify all of those that apply. Do not assume any provision applies unless it is stated in the question.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="examples">
+                <span class="los-header">Examples</span>
+                <div class="content-body">
+                    
+                    <div class="example-box">
+                        <div class="example-title">Example 1: Hedge Fund Fees</div>
+                        <p><strong>Scenario:</strong> BJI Funds is a hedge fund with a value of $110 million at initiation. BJI Funds charges a 2% management fee based on assets under management at the beginning of the year and a 20% performance fee with a 5% soft hurdle rate, and uses a high-water mark. Performance fees are calculated on gains net of management fees.</p>
+                        
+                        <p style="margin-top: 1rem;">Year-end values before fees:</p>
+                        <ul>
+                            <li>Year 1: $100.2 million</li>
+                            <li>Year 2: $119.0 million</li>
+                        </ul>
+
+                        <p style="margin-top: 1.5rem;"><strong>Calculate the total fees and investor's after-fee return for both years.</strong></p>
+
+                        <div class="calculation-step">
+                            <strong>Year 1:</strong><br>
+                            Management fee: 110.0 million × 2% = $2.2 million<br><br>
+                            Return net of management fees: (100.2 - 110.0) / 110.0 = -8.9%<br><br>
+                            Performance fee: $0 (return less than 5% hurdle rate)<br><br>
+                            Total fees: $2.2 million<br><br>
+                            Ending value net of fees: 100.2 - 2.2 = $98.0 million<br><br>
+                            <strong>Year 1 after-fees return: (98.0 / 110.0) - 1 = -10.9%</strong>
+                        </div>
+
+                        <div class="calculation-step">
+                            <strong>Year 2:</strong><br>
+                            Management fee: 98.0 million × 2% = $1.96 million<br><br>
+                            Year-end value net of management fee: 119.0 - 1.96 = $117.04 million<br><br>
+                            High-water mark: $110 million<br><br>
+                            Year 2 value net of management fee, above high-water mark:<br>
+                            117.04 - 110.0 = $7.04 million<br><br>
+                            Year 2 return net of management fee, above high-water mark:<br>
+                            7.04 / 110.0 = 6.4%<br><br>
+                            Since 6.4% > 5% (soft hurdle), performance fee calculated on entire gain:<br>
+                            Performance fee: 7.04 × 0.20 = $1.41 million<br><br>
+                            Total fees: 1.96 + 1.41 = $3.37 million<br><br>
+                            Year 2 year-end value after fees: 119.0 - 3.37 = $115.63 million<br><br>
+                            <strong>Year 2 after-fee return: (115.63 / 98.0) - 1 = 18.0%</strong>
+                        </div>
+
+                        <p style="margin-top: 1rem; font-style: italic; color: var(--vibrant-green);">
+                            Note: If the 5% was a hard hurdle rate, the performance fee would be calculated only on the gains more than 5% above the high-water mark.
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <div class="example-title">Example 2: Fund-of-Funds</div>
+                        <p><strong>Scenario:</strong> An investor makes a total investment of $60 million in a fund-of-funds that has a "1 and 10" fee structure, with management and performance fees calculated independently based on year-end values. Of the $60 million investment, $40 million is allocated to the Alpha fund and $20 million is allocated to the Beta fund.</p>
+                        
+                        <p style="margin-top: 1rem;">One year later, the value of the Alpha fund investment is $45 million, and the value of the Beta fund investment is $28 million, both net of fund fees.</p>
+
+                        <p style="margin-top: 1.5rem;"><strong>Calculate the investor's return for the year net of fees.</strong></p>
+
+                        <div class="calculation-step">
+                            Gross value at year-end: $45 + $28 = $73 million<br><br>
+                            Management fee: 1% × $73 million = $0.73 million<br><br>
+                            Investor's gain before fund-of-funds fees: $73 - $60 = $13 million<br><br>
+                            Performance fee: 10% × $13 million = $1.3 million<br><br>
+                            Year-end value after fees: $73 - $0.73 - $1.3 = $70.97 million<br><br>
+                            <strong>Investor's one-year return after fees: ($70.97 / $60) - 1 = 18.3%</strong><br><br>
+                            <span style="color: var(--vibrant-green);">Note: The same investments made directly with the Alpha and Beta funds would have returned ($73 / $60) - 1 = 21.7%</span>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <div class="example-title">Example 3: Waterfall Structure and Clawback Provision</div>
+                        <p><strong>Scenario:</strong> A private equity fund invests $100 million in a venture company that is sold for $130 million. The fund also invests $100 million in an LBO that goes poorly and is liquidated for $80 million. The carried interest performance fee for the GP is 20%.</p>
+
+                        <p style="margin-top: 1.5rem;"><strong>Question 1:</strong> If there is no clawback provision, calculate the investor's return after performance fees, assuming the investment outcomes are realized in the same year under:</p>
+                        
+                        <div class="calculation-step">
+                            <strong>(a) American-style (deal-by-deal) waterfall:</strong><br>
+                            Performance fee on venture: 20% × ($130 - $100) = $6 million<br>
+                            Performance fee on LBO: $0 (loss)<br>
+                            Total performance fees: $6 million<br><br>
+                            Investor's return: [($130 + $80 - $6) / $200] - 1 = 2.0%
+                        </div>
+
+                        <div class="calculation-step">
+                            <strong>(b) European-style (whole-of-fund) waterfall:</strong><br>
+                            Total gain: $130 + $80 - $200 = $10 million<br>
+                            Performance fee: 20% × $10 = $2 million<br><br>
+                            Investor's return: [($130 + $80 - $2) / $200] - 1 = 4.0%
+                        </div>
+
+                        <p style="margin-top: 1.5rem;"><strong>Question 2:</strong> How would the answers be affected if the venture investment was sold in Year 1 and the LBO investment was sold in Year 2?</p>
+
+                        <div class="calculation-step">
+                            The European-style waterfall structure would have the same overall return as the American-style structure, as the performance fee for the venture investment of $6 million would be paid in Year 1 and no performance fee would be received on the LBO investment.
+                        </div>
+
+                        <p style="margin-top: 1.5rem;"><strong>Question 3:</strong> How would including a clawback provision affect investor returns calculated in Question 1?</p>
+
+                        <div class="calculation-step">
+                            With a clawback provision, after the LBO investment is sold, the performance fee of $6 million paid on the venture investment is more than 20% of the return on the total investment. The fee is 60% of the total (net) gain of $10 million.<br><br>
+                            The investor could "claw back" $4 million of the $6 million paid as a performance fee on the venture investment, which would reduce the total performance fee to 20% of the $10 million gain = $2 million.<br><br>
+                            This results in the same return as the European-style waterfall: 4.0%
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="los-block" id="key-concepts">
+                <span class="los-header">KEY CONCEPTS</span>
+                <div class="content-body">
+                    <div class="key-concepts-box">
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 79.a</div>
+                            <p>Alternative investments are typically exposed to risks that traditional investments are not, including timing of cash flows, use of leverage, valuation assumptions for illiquid investments, and complex fee structures and taxation.</p>
+                            <p style="margin-top: 0.8rem;">Alternative investment returns typically exhibit a J-curve effect: negative during the capital commitment phase, less negative during the capital deployment phase, and positive during the capital distribution phase.</p>
+                            <p style="margin-top: 0.8rem;">Because managers control cash inflows and outflows, an IRR is appropriate for measuring returns. The multiple of invested capital is a simpler measure that does not depend on the timing of cash flows.</p>
+                            <p style="margin-top: 0.8rem;">Assumptions underlying the fair value of assets can be described by a three-level hierarchy: Level 1 (quoted prices readily available), Level 2 (can be valued based on observable inputs), and Level 3 (require unobservable inputs to establish a fair value).</p>
+                            <p style="margin-top: 0.8rem;">Fair values of Level 3 assets might be updated infrequently due to a lack of market activity. This can bias return measures upward and risk measures downward.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 79.b</div>
+                            <p>Before-fee returns on alternative investments are calculated the same way we calculate fees on any investment. Calculating after-fee returns requires us to adjust the cash flows or values for the various fees involved (typically management and performance fees), and for specifications such as hurdle rates and high-water marks.</p>
+                            <p style="margin-top: 0.8rem;">Fee structures are subject to negotiation and may differ for different investors. Customized terms are detailed in side letters.</p>
+                            <p style="margin-top: 0.8rem;">Alternative investment databases may exhibit survivorship bias (excluding failed funds) and backfill bias (managers selecting only successful funds), which can overstate returns and understate risks.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="doc-footer">
+                PROJECT BY <a href="https://www.linkedin.com/in/sahil-gaikwad-1953b0259/" target="_blank">SAHIL GAIKWAD</a>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:var(--vibrant-green); margin-bottom: 1rem;">Candidate Excellence</h2>
+            <p style="margin-bottom: 2rem; line-height: 1.8;">"This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality."</p>
+            <p style="font-weight: 800; letter-spacing: 2px;">BY SAHIL GAIKWAD</p>
+            <div onclick="closeModals()" style="margin-top: 2rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ DISMISS ]</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="calModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="calTitle" style="color:var(--vibrant-green); margin-bottom: 1rem;">Date</h2>
+            <p id="calDate" style="font-weight: 800; margin-bottom: 1.5rem;"></p>
+            <textarea style="width:100%; height:80px; padding:10px; border: 1px solid var(--border-color); color:inherit; background:transparent;" placeholder="Enter notes..."></textarea>
+            <div onclick="closeModals()" style="margin-top: 1rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ SAVE ]</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function openAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
+        function openCalendar() { 
+            document.getElementById('calModal').style.display = 'flex'; 
+            document.getElementById('calDate').innerText = new Date().toDateString();
+            document.getElementById('calTitle').innerText = new Date().toLocaleString('default', { month: 'long' });
+        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.height = scrolled + "%";
+
+            const sections = document.querySelectorAll('.los-block, .doc-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

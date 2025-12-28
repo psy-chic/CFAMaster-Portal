@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Dashboard | CFA Ethics</title>
+    <title>Executive Dashboard | Alternative Investments</title>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;500;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -90,7 +90,7 @@
         /* Swipe Indicator */
         .swipe-indicator {
             position: fixed;
-            right: 20px;
+            left: 20px;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
@@ -110,16 +110,16 @@
         .swipe-arrow {
             font-size: 1.5rem;
             color: var(--vibrant-green);
-            animation: slideRight 2s ease-in-out infinite;
+            animation: slideLeft 2s ease-in-out infinite;
         }
 
-        @keyframes slideRight {
+        @keyframes slideLeft {
             0%, 100% {
                 transform: translateX(0);
                 opacity: 0.3;
             }
             50% {
-                transform: translateX(10px);
+                transform: translateX(-10px);
                 opacity: 1;
             }
         }
@@ -213,6 +213,7 @@
         .card:nth-child(4) { animation-delay: 0.4s; }
         .card:nth-child(5) { animation-delay: 0.5s; }
         .card:nth-child(6) { animation-delay: 0.6s; }
+        .card:nth-child(7) { animation-delay: 0.7s; }
 
         @keyframes fadeInUp {
             from {
@@ -280,11 +281,6 @@
         .card:hover .module-item:nth-child(3) { transition-delay: 0.2s; }
         .card:hover .module-item:nth-child(4) { transition-delay: 0.25s; }
         .card:hover .module-item:nth-child(5) { transition-delay: 0.3s; }
-        .card:hover .module-item:nth-child(6) { transition-delay: 0.35s; }
-        .card:hover .module-item:nth-child(7) { transition-delay: 0.4s; }
-        .card:hover .module-item:nth-child(8) { transition-delay: 0.45s; }
-        .card:hover .module-item:nth-child(9) { transition-delay: 0.5s; }
-        .card:hover .module-item:nth-child(10) { transition-delay: 0.55s; }
 
         .btn-study { 
             padding: 8px 14px; 
@@ -393,14 +389,14 @@
             border-bottom: 1px solid var(--vibrant-green); 
         }
 
-        /* Slide Transition Effect */
-        body.sliding-out {
-            animation: slideOutLeft 0.5s ease-out forwards;
+        /* Slide Transition Effects */
+        body.sliding-out-right {
+            animation: slideOutRight 0.5s ease-out forwards;
         }
 
-        @keyframes slideOutLeft {
+        @keyframes slideOutRight {
             to {
-                transform: translateX(-100%);
+                transform: translateX(100%);
                 opacity: 0;
             }
         }
@@ -410,11 +406,11 @@
     <!-- Floating Particles -->
     <div class="particles" id="particles"></div>
 
-    <!-- Swipe Indicator -->
+    <!-- Swipe Indicator (Left side for going back) -->
     <div class="swipe-indicator">
-        <div class="swipe-arrow">→</div>
-        <div class="swipe-arrow">→</div>
-        <div class="swipe-text">SWIPE FOR ALTERNATIVES</div>
+        <div class="swipe-arrow">←</div>
+        <div class="swipe-arrow">←</div>
+        <div class="swipe-text">SWIPE FOR ETHICS</div>
     </div>
 
     <div class="top-controls">
@@ -446,77 +442,73 @@
                 "This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality. Your progress toward the CFA charter is our priority."
             </p>
             <div style="margin-top:2rem; font-weight:800; letter-spacing:1px">BY SAHIL GAIKWAD</div>
-            <div onclick="closeModals()" style="margin-top:2rem; cursor:pointer; color:var(--vibrant-green); font-weight:800">[ DISMISS ]</div>
+            <div onclick="closeModals()" style="margin-top:2rem; cursor: pointer; color:var(--vibrant-green); font-weight:800">[ DISMISS ]</div>
         </div>
     </div>
 
     <div class="header">
-        <span style="font-weight:800; font-size:0.7rem; letter-spacing:3px; color:var(--vibrant-green); text-transform:uppercase">Institutional Curriculum</span>
-        <h1>Ethics & Professional Standards</h1>
+        <span style="font-weight:800; font-size:0.7rem; letter-spacing:3px; color:var(--vibrant-green); text-transform:uppercase">Institutional Curriculum 2024/25</span>
+        <h1>Alternative Investments</h1>
     </div>
 
     <div class="section-divider"></div>
 
     <div class="grid">
         <div class="card">
-            <span class="card-tag">Reading 89</span>
-            <h3>Ethics and Trust</h3>
+            <span class="card-tag">Reading 78</span>
+            <h3>Alternative Investment Features</h3>
             <div class="module-list">
-                <div class="module-item"><span>Module 89.1: Ethics and Trust</span><a href="reading89.html" class="btn-study">BEGIN</a></div>
+                <div class="module-item"><span>Module 78.1: Alternative Investment Structures</span><a href="reading78.html" class="btn-study">BEGIN</a></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="card-tag">Reading 90</span>
-            <h3>Code and Standards</h3>
+            <span class="card-tag">Reading 79</span>
+            <h3>Performance and Returns</h3>
             <div class="module-list">
-                <div class="module-item"><span>Module 90.1: Code and Standards</span><a href="reading90.html" class="btn-study">BEGIN</a></div>
+                <div class="module-item"><span>Module 79.1: Performance Appraisal</span><a href="reading79.html" class="btn-study">STUDY</a></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="card-tag">Reading 91</span>
-            <h3>Guidance for Standards I–VII</h3>
+            <span class="card-tag">Reading 80</span>
+            <h3>Private Capital: Equity & Debt</h3>
             <div class="module-list">
-                <div class="module-item"><span>Module 91.1: Standards I(A) & I(B)</span><a href="reading91.html" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.2: Standards I(C) & I(D)</span><a href="reading91.html#standard-ic" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.3: Standard II</span><a href="reading91.html#standard-ii" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.4: Standards III(A) & III(B)</span><a href="reading91.html#standard-iii" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.5: Standards III(C, D, E)</span><a href="reading91.html#standard-iiic" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.6: Standard IV</span><a href="reading91.html#standard-iv" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.7: Standard V</span><a href="reading91.html#standard-v" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.8: Standard VI</span><a href="reading91.html#standard-vi" class="btn-study">STUDY</a></div>
-                <div class="module-item"><span>Module 91.9: Standard VII</span><a href="reading91.html#standard-vii" class="btn-study">STUDY</a></div>
+                <div class="module-item"><span>Module 80.1: Private Capital</span><a href="reading80.html" class="btn-study">STUDY</a></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="card-tag">Reading 92</span>
-            <h3>Introduction to GIPS</h3>
+            <span class="card-tag">Reading 81</span>
+            <h3>Real Estate & Infrastructure</h3>
             <div class="module-list">
-                <div class="module-item"><span>Module 92.1: Introduction to GIPS</span><a href="reading92.html" class="btn-study">BEGIN</a></div>
+                <div class="module-item"><span>Module 81.1: Real Estate</span><a href="reading81.html" class="btn-study">STUDY</a></div>
+                <div class="module-item"><span>Module 81.2: Infrastructure</span><a href="reading81.html#module-81-2" class="btn-study">STUDY</a></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="card-tag">Reading 93</span>
-            <h3>Ethics Application</h3>
+            <span class="card-tag">Reading 82</span>
+            <h3>Natural Resources</h3>
             <div class="module-list">
-                <div class="module-item"><span>Module 93.1: Ethics Application</span><a href="reading93.html" class="btn-study">BEGIN</a></div>
+                <div class="module-item"><span>Module 82.1: Farmland, Timberland & Commodities</span><a href="reading82.html" class="btn-study">STUDY</a></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="card-tag">Assessment Center</span>
-            <h3>Knowledge Test</h3>
+            <span class="card-tag">Reading 83</span>
+            <h3>Hedge Funds</h3>
             <div class="module-list">
-                <div class="module-item" style="border-left: 4px solid var(--vibrant-green); background: #f0fdf4;">
-                    <span style="font-size: 0.9rem; line-height: 1.5;">Test your knowledge with 5 different practice sets. Each test has 20 questions and 30 minutes to complete.</span>
-                </div>
-                <div class="module-item">
-                    <span>Practice Test Series</span>
-                    <a href="etest.html" class="btn-study">START TEST</a>
-                </div>
+                <div class="module-item"><span>Module 83.1: Hedge Funds</span><a href="reading83.html" class="btn-study">STUDY</a></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag">Reading 84</span>
+            <h3>Digital Assets</h3>
+            <div class="module-list">
+                <div class="module-item"><span>Module 84.1: Distributed Ledger Technology</span><a href="reading84.html" class="btn-study">STUDY</a></div>
+                <div class="module-item"><span>Module 84.2: Digital Asset Characteristics</span><a href="reading84.html#module-2" class="btn-study">STUDY</a></div>
             </div>
         </div>
     </div>
@@ -573,15 +565,15 @@
 
             // Check if it's a horizontal swipe (not vertical scroll)
             if (verticalDiff < verticalThreshold) {
-                // Swipe Left (go to next page - Alternative Investments)
-                if (horizontalDiff > swipeThreshold) {
-                    navigateToPage('dashboard2.html');
+                // Swipe Right (go back to Ethics page)
+                if (horizontalDiff < -swipeThreshold) {
+                    navigateToPage('dashboard.html');
                 }
             }
         }
 
         function navigateToPage(url) {
-            document.body.classList.add('sliding-out');
+            document.body.classList.add('sliding-out-right');
             setTimeout(() => {
                 window.location.href = url;
             }, 400);

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading 84 | Executive Study Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 260px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            padding-left: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .progress-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 0%;
+            background: var(--vibrant-green);
+            transition: 0.1s;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 4rem;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        }
+
+        .nav-controls {
+            position: fixed; top: 25px; right: 30px;
+            display: flex; gap: 12px; z-index: 1001;
+        }
+
+        .ctrl-btn {
+            width: 45px; height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main);
+            cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .ctrl-btn:hover { background: var(--vibrant-green); color: white; transform: scale(1.1); }
+
+        .doc-header { text-align: center; margin-bottom: 3rem; }
+        h1 { font-size: 2.5rem; margin: 1rem 0; font-weight: 800; }
+        .section-divider { width: 120px; height: 5px; background: var(--vibrant-green); margin: 2rem auto; border-radius: 10px; }
+        
+        .los-block { margin-bottom: 5rem; scroll-margin-top: 100px; }
+        .los-header { font-weight: 800; color: var(--vibrant-green); border-bottom: 1px solid var(--vibrant-green); display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; }
+        .los-requirement { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 1.5rem; font-style: italic; }
+        .content-body { font-family: 'Lora', serif; font-size: 1.05rem; }
+        .content-body p { margin-bottom: 1.2rem; }
+        .content-body ul, .content-body ol { margin-left: 2rem; margin-bottom: 1.2rem; }
+        .content-body li { margin-bottom: 0.5rem; }
+        .content-body strong { color: var(--vibrant-green); }
+        
+        .highlight-quote {
+            border-left: 4px solid var(--vibrant-green);
+            padding: 1.5rem; margin: 2rem 0;
+            background: rgba(16, 185, 129, 0.05);
+            font-style: italic;
+        }
+
+        .category-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--vibrant-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .diagram-container {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .diagram-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            height: 120px;
+        }
+
+        .asset-card:hover {
+            border-color: var(--vibrant-green);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+            height: auto;
+            min-height: 300px;
+            z-index: 10;
+        }
+
+        .asset-card-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .asset-card-icon {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .asset-card-brief {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .asset-card-hover-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.75rem;
+            color: var(--vibrant-green);
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .asset-card:hover .asset-card-hover-hint {
+            opacity: 0;
+        }
+
+        .asset-card-details {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .asset-card:hover .asset-card-details {
+            opacity: 1;
+            max-height: 500px;
+        }
+
+        .asset-card-details h4 {
+            color: var(--vibrant-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .asset-card-details p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0.8rem;
+        }
+
+        .asset-card-details ul {
+            font-size: 0.85rem;
+            margin-left: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .asset-card-details li {
+            margin-bottom: 0.3rem;
+        }
+
+        .note-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .note-title {
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--vibrant-green);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .scatter-plot {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .correlation-matrix {
+            width: 100%;
+            margin: 2rem 0;
+        }
+
+        .correlation-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .correlation-label {
+            width: 150px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .correlation-bar {
+            flex-grow: 1;
+            height: 30px;
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.8) 100%);
+            border-radius: 4px;
+            position: relative;
+            margin-left: 1rem;
+        }
+
+        .correlation-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .key-concepts-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .concept-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-footer {
+            margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.8rem; letter-spacing: 2px;
+        }
+        .doc-footer a { color: var(--vibrant-green); text-decoration: none; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box { background: var(--paper-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 90%; max-width: 500px; padding: 3rem; border-radius: 8px; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; }
+            .asset-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="sidebar-header">Course Map</div>
+        <ul class="nav-list">
+            <li class="nav-item" data-section="intro"><a href="#intro" class="nav-link">Top of Reading</a></li>
+            <li class="nav-item" data-section="module-1"><a href="#module-1" class="nav-link">Module 84.1</a></li>
+            <li class="nav-item" data-section="los-a"><a href="#los-a" class="nav-link">LOS 84.a: DLT Applications</a></li>
+            <li class="nav-item" data-section="consensus"><a href="#consensus" class="nav-link">Consensus Protocols</a></li>
+            <li class="nav-item" data-section="networks"><a href="#networks" class="nav-link">Network Types</a></li>
+            <li class="nav-item" data-section="digital-assets"><a href="#digital-assets" class="nav-link">Digital Asset Categories</a></li>
+            <li class="nav-item" data-section="module-2"><a href="#module-2" class="nav-link">Module 84.2</a></li>
+            <li class="nav-item" data-section="los-b"><a href="#los-b" class="nav-link">LOS 84.b: Investment Features</a></li>
+            <li class="nav-item" data-section="los-c"><a href="#los-c" class="nav-link">LOS 84.c: Investment Forms</a></li>
+            <li class="nav-item" data-section="los-d"><a href="#los-d" class="nav-link">LOS 84.d: Risk & Return</a></li>
+            <li class="nav-item" data-section="key-concepts"><a href="#key-concepts" class="nav-link">Key Concepts</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="nav-controls">
+            <a href="dashboard.html" class="ctrl-btn" title="Back to Dashboard"><i class="fa-solid fa-home"></i></a>
+            <div class="ctrl-btn" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+            <div class="ctrl-btn" onclick="openCalendar()"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="ctrl-btn" onclick="openAbout()"><i class="fa-solid fa-user-tie"></i></div>
+        </div>
+
+        <div class="document-container">
+            <header class="doc-header" id="intro">
+                <span style="font-weight: 800; font-size: 0.8rem; letter-spacing: 4px; color: var(--vibrant-green);">READING 84</span>
+                <h1>Introduction to Digital Assets</h1>
+                <div class="section-divider"></div>
+            </header>
+
+            <!-- MODULE 84.1 -->
+            <section class="los-block" id="module-1">
+                <span class="los-header">MODULE 84.1</span>
+                <span class="los-requirement">Distributed Ledger Technology</span>
+                <div class="content-body">
+                    <p>This module introduces distributed ledger technology and its financial applications, exploring how blockchain and digital assets are transforming the investment landscape.</p>
+                </div>
+            </section>
+
+            <!-- LOS 84.a -->
+            <section class="los-block" id="los-a">
+                <span class="los-header">LOS 84.a</span>
+                <span class="los-requirement">Describe financial applications of distributed ledger technology.</span>
+                <div class="content-body">
+                    <p><strong>Digital assets</strong> are assets that can be electronically created, stored, and transferred. This relatively new alternative asset class includes cryptocurrencies, tokens, and digital collectibles. A digital asset is secured and validated using <strong>distributed ledger technology (DLT)</strong>, also known as blockchain technology. Cryptocurrencies have their own blockchains, while crypto tokens are built on blockchains that already exist.</p>
+
+                    <p>A <strong>distributed ledger</strong> is a database shared among market participants. It maintains a record of all transactions, which allows each participant to have an identical copy of the database.</p>
+
+                    <div class="highlight-quote">
+                        <strong>DLT Benefits:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li>Accuracy, transparency, and security</li>
+                            <li>Rapid ownership transfer</li>
+                            <li>Peer-to-peer (P2P) interactions for creating, trading, and monitoring digital assets</li>
+                        </ul>
+                        <br>
+                        <strong>DLT Disadvantages:</strong>
+                        <ul style="margin-top: 0.5rem; margin-left: 2rem;">
+                            <li>Data protection concerns</li>
+                            <li>Potential privacy violations</li>
+                            <li>Large amount of computational power needed for verifying transactions</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>DLT Network Components:</strong></p>
+                    <p>A DLT network consists of a digital ledger, a consensus mechanism, and a network of participants. A <strong>consensus mechanism</strong> establishes a common state of the ledger, which involves validating transactions and updating the ledger. These two steps generate records that are <strong>immutable</strong> (unchangeable) while providing transparency for all network participants. DLT uses cryptography to encrypt data, which prevents unauthorized parties from accessing data.</p>
+
+                    <p>DLT can also implement <strong>smart contracts</strong>, where a computer program self-executes based on predetermined terms and conditions. Automating contingent claims and collateral transfers during default events are examples of smart contract applications.</p>
+
+                    <p><strong>Blockchain:</strong></p>
+                    <p>A <strong>blockchain</strong> is a digital ledger that records information sequentially within blocks. These blocks are linked together (chained), and information is secured using cryptographic techniques. Blocks within the chain contain a group of transactions as well as a secure link (known as a hash) to the previous block. A newly created transaction is only added to a chain after it has been validated by authorized participants.</p>
+                </div>
+            </section>
+
+            <!-- Consensus Protocols -->
+            <section class="los-block" id="consensus">
+                <span class="los-header">Consensus Protocols</span>
+                <div class="content-body">
+                    <p>Consensus protocols determine how blocks are chained together. They are structured to protect against market manipulation. The main types of consensus protocols are proof of work and proof of stake.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Proof of Work (PoW)</div>
+                        <p>For the <strong>proof of work (PoW)</strong> protocol, when a transaction takes place, miners use computers to solve a cryptographic problem, which then verifies the transaction. Blocks are validated and locked into the blockchain thanks to powerful computers that use massive amounts of energy. This process rewards the miners with cryptocurrency.</p>
+                        
+                        <p style="margin-top: 1rem;">The resources required for mining impose substantial costs on any attempt to manipulate the blockchain's historical record. To do so would require one party to control most (i.e., 51%) of the network. For this reason, a blockchain is more likely to succeed when there is a large number of network participants. <strong>PoW is the most widely used consensus mechanism.</strong></p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Proof of Stake (PoS)</div>
+                        <p>The <strong>proof of stake (PoS)</strong> protocol is an emerging consensus mechanism in which certain network participants pledge collateral (a process known as <strong>staking</strong>) to guarantee the validity of a block. These participants, who are known as <strong>validators</strong>, use their stake to signal to the network that a transaction is ready to be added to the blockchain. Additional validators will then verify that the transaction is, indeed, authentic.</p>
+                        
+                        <p style="margin-top: 1rem;">Validators also protect the network from potential malicious attacks by controlling most of the network's computational power. Validators are rewarded with a return on their staked collateral.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Permissionless and Permissioned Networks -->
+            <section class="los-block" id="networks">
+                <span class="los-header">Permissionless and Permissioned Networks</span>
+                <div class="content-body">
+                    <p>The two forms of DLT networks are permissionless and permissioned.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Permissionless Networks</div>
+                        <p>In <strong>permissionless networks</strong>, transactions are visible to all users within the network, and any user can execute a transaction. In addition, all network functions can be performed by any network participant. Bitcoin is considered a permissionless network, as are many other types of cryptocurrency.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Advantages:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Transactions are confirmed or denied through consensus mechanisms rather than by a centralized authority</li>
+                            <li>Blockchain transactions cannot be manipulated once they have been added to the ledger, creating an immutable record</li>
+                            <li>Transacting parties do not have to trust each other</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Permissioned Networks</div>
+                        <p>In <strong>permissioned networks</strong>, users may be restricted from some network activities. Permissions (or controls) can modify the level of ledger accessibility. These levels range from adding transactions (for network participants) to viewing only the transaction history (for regulators).</p>
+                        
+                        <p style="margin-top: 1rem;">Because permissioned blockchains have stronger restrictions, they are more cost effective than open and decentralized permissionless networks.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Digital Asset Categories -->
+            <section class="los-block" id="digital-assets">
+                <span class="los-header">Digital Asset Categories</span>
+                <div class="content-body">
+                    <p>DLT has many potential applications within the financial industry, including the creation of digital assets and the delivery of more efficient financial services.</p>
+
+                    <div class="diagram-container">
+                        <div class="diagram-title">Figure 84.1: Types of Digital Assets<br><span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted);">(Hover over each card for detailed information)</span></div>
+                        <div class="asset-grid">
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">₿</span>
+                                    Cryptocurrencies
+                                </div>
+                                <p class="asset-card-brief">Digital currencies with limited supply (Bitcoin, Ether)</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Digital currencies issued privately without central bank backing, enabling near-real-time peer-to-peer transactions.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Limited supply to maintain scarcity</li>
+                                        <li>Bitcoin: 21 million unit limit</li>
+                                        <li>Ether: Built on Ethereum blockchain</li>
+                                        <li>Together make up >80% of crypto market</li>
+                                    </ul>
+                                    <h4>Examples</h4>
+                                    <p>Bitcoin (store of value), Ether (programmable blockchain)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">⚖️</span>
+                                    Stablecoins
+                                </div>
+                                <p class="asset-card-brief">Linked to stable assets like USD (Tether)</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Digital currencies designed to maintain stable value by linking to traditional assets like the U.S. dollar.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Backed by reserve basket of assets</li>
+                                        <li>Protected from price volatility</li>
+                                        <li>Cannot be exchanged for fiat currency</li>
+                                        <li>No legal or regulatory backing</li>
+                                    </ul>
+                                    <h4>Types</h4>
+                                    <ul>
+                                        <li><strong>Fiat-collateralized:</strong> Tether (USDT)</li>
+                                        <li><strong>Algorithmic:</strong> Use algorithms to control supply</li>
+                                        <li><strong>Asset-backed:</strong> Pegged to gold, real estate</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">🐕</span>
+                                    Meme Coins
+                                </div>
+                                <p class="asset-card-brief">Entertainment-focused (Dogecoin)</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Cryptocurrencies launched primarily for entertainment purposes, often based on internet memes or cultural phenomena.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Driven by social media trends</li>
+                                        <li>High volatility and speculation</li>
+                                        <li>Limited practical utility</li>
+                                        <li>Community-driven value</li>
+                                    </ul>
+                                    <h4>Notable Example</h4>
+                                    <p><strong>Dogecoin:</strong> Saw dramatic rise in May 2021 due to social media endorsements, but dropped sharply a year later as usefulness questioned.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">🏛️</span>
+                                    CBDCs
+                                </div>
+                                <p class="asset-card-brief">Central Bank Digital Currencies</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Digital versions of banknotes or coins issued by central banks, representing tokenized forms of fiat currencies.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Government-backed and regulated</li>
+                                        <li>Alternative to physical currency</li>
+                                        <li>Currently under exploration by central banks</li>
+                                        <li>Legal tender status</li>
+                                    </ul>
+                                    <h4>Benefits</h4>
+                                    <ul>
+                                        <li>Faster, cheaper cross-border payments</li>
+                                        <li>Enhanced monetary policy tools</li>
+                                        <li>Financial inclusion opportunities</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">🎨</span>
+                                    NFTs
+                                </div>
+                                <p class="asset-card-brief">Non-Fungible Tokens (digital art)</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Unique digital assets linked to certificates of authenticity, representing distinct objects that cannot be replicated.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Each NFT is unique and non-interchangeable</li>
+                                        <li>Tracks historical record of ownership</li>
+                                        <li>Provides immutable proof of authenticity</li>
+                                        <li>Uses tokenization technology</li>
+                                    </ul>
+                                    <h4>Common Applications</h4>
+                                    <ul>
+                                        <li>Digital artwork and collectibles</li>
+                                        <li>Virtual real estate</li>
+                                        <li>Music and entertainment rights</li>
+                                        <li>Gaming assets</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">📜</span>
+                                    Security Tokens
+                                </div>
+                                <p class="asset-card-brief">Digital ownership rights (ICOs)</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Digital representations of ownership rights in publicly traded securities, facilitating custody, settlement, and post-trade processing.</p>
+                                    <h4>Key Features</h4>
+                                    <ul>
+                                        <li>Single ledger for multiple transactions</li>
+                                        <li>Enhanced transparency</li>
+                                        <li>Streamlined recordkeeping</li>
+                                        <li>Efficient settlement process</li>
+                                    </ul>
+                                    <h4>Initial Coin Offerings (ICOs)</h4>
+                                    <p>Unregulated process where companies offer crypto tokens for money or other cryptocurrency. Less expensive than IPOs but lack voting rights and face increasing regulatory scrutiny due to fraud concerns.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">🔧</span>
+                                    Utility Tokens
+                                </div>
+                                <p class="asset-card-brief">Network services and payments</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Tokens that provide access to network services, facilitate service payments, and cover network fees.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Compensate for network activities only</li>
+                                        <li>No dividend payments (unlike security tokens)</li>
+                                        <li>Function as internal currency</li>
+                                        <li>Grant access to platform features</li>
+                                    </ul>
+                                    <h4>Use Cases</h4>
+                                    <ul>
+                                        <li>Transaction fee payments</li>
+                                        <li>Access to decentralized applications</li>
+                                        <li>Service consumption on blockchain networks</li>
+                                        <li>Rewards for network participation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="asset-card">
+                                <div class="asset-card-title">
+                                    <span class="asset-card-icon">🗳️</span>
+                                    Governance Tokens
+                                </div>
+                                <p class="asset-card-brief">Voting rights on networks</p>
+                                <span class="asset-card-hover-hint"><i class="fa-solid fa-arrow-pointer"></i> Hover</span>
+                                <div class="asset-card-details">
+                                    <h4>Definition</h4>
+                                    <p>Tokens offered on permissionless networks that function as voting rights to determine how blockchain networks should operate.</p>
+                                    <h4>Key Characteristics</h4>
+                                    <ul>
+                                        <li>Democratic control over protocol changes</li>
+                                        <li>Voting power proportional to holdings</li>
+                                        <li>Community-driven decision making</li>
+                                        <li>Network stability maintenance</li>
+                                    </ul>
+                                    <h4>Voting Applications</h4>
+                                    <ul>
+                                        <li>Technical issue resolution</li>
+                                        <li>Protocol upgrades and improvements</li>
+                                        <li>Treasury fund allocation</li>
+                                        <li>Network parameter adjustments</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrencies</div>
+                        <p>A <strong>cryptocurrency</strong> is a digital currency issued privately with no backing from a central bank. By using this digital medium of exchange, parties can execute near-real-time transactions without the need for an intermediary. Cryptocurrencies commonly limit how many currency units can be issued. The objective of this supply limit is to maintain the unit as a store of value; however, many cryptocurrencies still experience extreme price volatility.</p>
+                        
+                        <p style="margin-top: 1rem;">Various cryptocurrencies exist because their blockchains are designed and optimized differently. As the most widely traded cryptocurrency, <strong>Bitcoin</strong> has influenced the development of many other types of digital assets. Alternate cryptocurrencies, known as <strong>altcoins</strong>, are based on the technology used by Bitcoin.</p>
+                        
+                        <p style="margin-top: 1rem;">The most well-known altcoin is <strong>Ether</strong>, which is built on the Ethereum network. The Ethereum blockchain allows users to develop applications (smart contracts) to secure and validate transactions. Therefore, the value of Ethereum and other programmable blockchains extends beyond being only a store of value. To date, Bitcoin and Ether are the two most popular cryptocurrencies; as of July 2022, they made up more than 80% of the total cryptocurrency market.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Stablecoins</div>
+                        <p><strong>Stablecoins</strong> offer stable digital currency values. These coins are linked to the value of another asset, such as the U.S. dollar, and secured by a basket of assets. The value of stablecoins is protected from price volatility through this reserve basket, which minimizes risk from potential transaction failures.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Smart stablecoins</strong> or <strong>algorithmic stablecoins</strong> control their supply by using algorithms to mint additional assets when demand increases. Stablecoins cannot be exchanged for fiat currency, and they have no legal or regulatory backing. One of the most popular stablecoins is <strong>Tether</strong>, which is pegged to the U.S. dollar.</p>
+                        
+                        <p style="margin-top: 1rem;">A special case of stablecoins is an <strong>asset-backed token</strong>, which maintains price parity with a target asset, such as gold.</p>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Professor's Note</div>
+                        <p>The TerraUSD stablecoin was pegged to the U.S. dollar "algorithmically" instead of being directly linked to the underlying collateral value. In May 2022, the 1:1 peg failed after significant investor withdrawals and its value collapsed, resulting in a run on several stablecoins.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Meme Coins</div>
+                        <p>In general, <strong>meme coins</strong> are launched for entertainment purposes. In some cases, their rapid rise in popularity has allowed early purchasers to sell these coins for a quick and significant profit. The most popular meme coin is <strong>Dogecoin</strong>, which is based on a popular internet meme. In May 2021, Dogecoin saw a dramatic increase in market value thanks to social media endorsements. However, a year later, its market value dropped sharply as its usefulness came into question.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Central Bank Digital Currencies (CBDCs)</div>
+                        <p>As mentioned, governments do not currently back or regulate cryptocurrencies. Nevertheless, central banks are currently exploring the potential benefits of cryptocurrency equivalents as alternatives to physical currency. A <strong>central bank digital currency (CBDC)</strong> is essentially a digital version of a banknote or coin issued by a central bank.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Non-Fungible Tokens (NFTs)</div>
+                        <p>When physical assets like real estate change hands, considerable work is required to verify ownership. <strong>Tokenization</strong> uses DLT to streamline this process by digitally tracking the historical record of ownership.</p>
+                        
+                        <p style="margin-top: 1rem;">A <strong>nonfungible token (NFT)</strong> is an example of tokenization in which a digital asset is linked to a certificate of authenticity. The key difference between NFTs and "fungible" tokens is that each NFT represents a distinct object. For example, digital artwork is a common application for NFTs.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Security Tokens</div>
+                        <p>A <strong>security token</strong> digitally tracks ownership rights in publicly traded securities. A blockchain can facilitate the custody, settlement, recordkeeping, and post-trade processing of security tokens. With this single ledger technology, participants can perform various transactions more easily and with more transparency.</p>
+                        
+                        <p style="margin-top: 1rem;">An example of a security token is an <strong>initial coin offering (ICO)</strong>, which is an unregulated process in which companies offer crypto tokens in exchange for money or other cryptocurrency. In an ICO, tokens are issued to investors for future purchases of products or services. An ICO is an alternative to regulated initial public offerings (IPOs). ICOs are potentially less expensive and take less time to raise capital compared to IPOs; however, most ICOs do not have attached voting rights. Many jurisdictions are considering regulating ICOs due to an increase in fraud connected to these offerings.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Utility Tokens & Governance Tokens</div>
+                        <p><strong>Utility tokens</strong> provide network services, such as service payments and network fees. In contrast to security tokens that may pay dividends, a utility token only compensates investors for network activities.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Governance tokens</strong> are offered on permissionless networks and act as voting rights to determine how networks should operate. For example, a network can maintain stability and integrity by voting on solutions for a technical issue.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 84.2 -->
+            <section class="los-block" id="module-2">
+                <span class="los-header">MODULE 84.2</span>
+                <span class="los-requirement">Digital Asset Characteristics</span>
+                <div class="content-body">
+                    <p>This module examines the investment features of digital assets and contrasts them with traditional asset classes, while exploring various investment vehicles and the sources of risk, return, and diversification.</p>
+                </div>
+            </section>
+
+            <!-- LOS 84.b -->
+            <section class="los-block" id="los-b">
+                <span class="los-header">LOS 84.b</span>
+                <span class="los-requirement">Explain investment features of digital assets and contrast them with other asset classes.</span>
+                <div class="content-body">
+                    <p>Investing in digital assets is becoming more commonplace in the financial industry. In 2013, approximately 70 cryptocurrencies were recorded, but by early 2022, over 10,000 cryptocurrencies had been issued. Due to the high expected returns and diversification benefits of investing in cryptocurrencies, institutional investors are taking more interest in this alternative asset class.</p>
+
+                    <p>The nature of digital assets differs from traditional financial assets. Key investment differences between digital assets and other asset classes are as follows:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Characteristic</th>
+                                <th>Digital Assets</th>
+                                <th>Traditional Assets</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Inherent Value</strong></td>
+                                <td>Not backed by underlying assets or cash flows; no fundamental value. Prices based on scarcity and future value transfer ability.</td>
+                                <td>Backed by expected earnings, dividends, and interest payments. Have fundamental value.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transaction Validation</strong></td>
+                                <td>Recorded on decentralized digital ledgers using DLT.</td>
+                                <td>Recorded on private ledgers maintained by central intermediaries.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Medium of Exchange</strong></td>
+                                <td>Alternative to fiat currencies, mainly for online transactions. Not widely accepted as legal tender.</td>
+                                <td>Traded and priced in globally accepted fiat currencies.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Regulatory Framework</strong></td>
+                                <td>Lack well-developed standards. Regulations currently under development.</td>
+                                <td>Clear and established rules governing instruments in most jurisdictions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-quote">
+                        <strong>Medium of Exchange Challenges:</strong><br><br>
+                        The mainstream financial system is hesitant to accept cryptocurrencies as a medium of exchange due to:
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li>High transaction costs</li>
+                            <li>Cryptocurrencies not being legal tender in many jurisdictions</li>
+                            <li>Cryptocurrencies being heavily restricted in several countries</li>
+                        </ul>
+                        <br>
+                        CBDCs are currently being evaluated as tokenized forms of fiat currencies.
+                    </div>
+
+                    <p><strong>Regulatory Differences:</strong></p>
+                    <p>Most jurisdictions have clear and established rules governing financial instruments. However, unlike traditional financial assets, digital assets lack well-developed standards. Regulations specific to digital assets are currently under development. Regulators in the United States consider some digital currencies to be commodities, while other regulators consider them as nonfinancial assets. In addition, the cryptocurrency exchanges used to trade digital currencies are typically unregulated. As a result, participants in these exchanges are not specifically prohibited from engaging in behaviors like market manipulation.</p>
+                </div>
+            </section>
+
+            <!-- LOS 84.c -->
+            <section class="los-block" id="los-c">
+                <span class="los-header">LOS 84.c</span>
+                <span class="los-requirement">Describe investment forms and vehicles used in digital asset investments.</span>
+                <div class="content-body">
+                    <p>Investing in digital assets can be done directly on the blockchain, or indirectly through exchange-traded products and hedge funds. Direct ownership of cryptocurrencies requires the use of a "cryptocurrency wallet," which contains digital encryption keys for accessing and trading assets. The two categories of exchanges for trading cryptocurrencies are centralized exchanges and decentralized exchanges.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Centralized Exchanges</div>
+                        <p><strong>Centralized exchanges</strong> are privately held and offer trading platforms for price transparency and volume information. Despite being at odds with Bitcoin's decentralized nature, centralized exchanges are the most popular type of cryptocurrency exchange. Traders on these exchanges trade directly and electronically on private servers, which may introduce security vulnerabilities.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Risks:</strong> Compromised exchange servers can cause trading to halt and valuable user information to leak, such as keys to cryptocurrency wallets. Depending on the jurisdiction, some of these exchanges are regulated as financial exchanges.</p>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">Professor's Note</div>
+                        <p>The centralized exchange FTX became one of the largest crypto and stablecoin exchanges in 2021. However, falling cryptocurrency prices, increasing interest rates, and fraudulent management decisions led to extreme illiquidity issues for the exchange. In November 2022 these issues triggered substantial investor withdrawals, which ultimately led to the bankruptcy of FTX.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Decentralized Exchanges</div>
+                        <p>Similar in concept to Bitcoin, <strong>decentralized exchanges</strong> implement decentralized blockchain principles. A decentralized exchange does not have a centralized authority and it operates on a distributed framework. Multiple computers are used to service this type of exchange, so if one computer is attacked, the exchange will remain in operation. Therefore, attacks on decentralized exchanges are substantially more difficult.</p>
+                        
+                        <p style="margin-top: 1rem;">In addition, because no one person, group, or organization controls a decentralized exchange, regulations are difficult to enforce.</p>
+                    </div>
+
+                    <div class="highlight-quote">
+                        On either type of exchange, a lack of regulatory oversight raises investor protection concerns. Fraud and market manipulation are more likely to occur, such as <strong>pump-and-dump schemes</strong> involving questionable promotion of cryptocurrencies on social media to deliberately increase prices.
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Direct Investment</strong></p>
+                    <p>Direct investment in cryptocurrencies occurs when a transaction is recorded on the blockchain. When a transaction takes place, it becomes validated and permanently stored on the blockchain. Examples of gaining direct exposure include purchasing tokens on a cryptocurrency exchange, trading an NFT, and investing in an ICO. Continuous trading is offered on most cryptocurrency exchanges.</p>
+
+                    <p><strong>Risks of Direct Investment:</strong></p>
+                    <ul>
+                        <li>Fraud has become more prevalent with the rise in popularity of cryptocurrencies</li>
+                        <li>Scam ICOs, pump-and-dump schemes, market manipulation, theft</li>
+                        <li>Attempts to gain access to wallet credentials</li>
+                        <li>Losing passkeys makes the cryptocurrency in a wallet worthless (estimated 20% of Bitcoin is in lost or abandoned wallets)</li>
+                        <li>Many small cryptocurrencies are held primarily by a few large entities (whales) that may manipulate prices</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Indirect Investment</strong></p>
+                    <p>Indirect exposure to cryptocurrencies can be achieved through coin trusts, futures contracts, exchange-traded products, stocks, and hedge funds.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrency Coin Trusts</div>
+                        <p>Coin trusts offer shares in a trust that holds large amounts of cryptocurrency. This type of investment trades over the counter and is similar to a closed-end fund. Coin trusts increase transparency while eliminating the need for digital wallets and encryption keys. However, some trusts charge substantial fees and expenses.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrency Futures Contracts</div>
+                        <p>Futures contracts involve buying or selling a specific quantity of cryptocurrency at a predetermined future date. For example, the Chicago Mercantile Exchange trades Bitcoin futures based on spot Bitcoin prices from cryptocurrency exchanges. These contracts are typically cash settled and involve leverage. Because this market is newly developing, cryptocurrency futures are typically more volatile and less liquid than traditional futures markets.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrency Exchange-Traded Products</div>
+                        <p>Exchange-traded products, such as exchange-traded funds, attempt to mimic the returns of digital assets. These products typically gain exposure to cryptocurrency price movements using cash or cryptocurrency derivatives.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrency Stocks</div>
+                        <p>Cryptocurrency stocks offer indirect exposure through their business connection to digital assets. Examples include public digital exchanges; payment providers that support cryptocurrencies; corporations that accept cryptocurrencies as payments, invest in cryptocurrencies, or mine cryptocurrencies; and companies that provide products or services for operating blockchain networks.</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Cryptocurrency Hedge Funds</div>
+                        <p>Hedge funds employ strategies such as discretionary long, long/short, quantitative, and multistrategy to invest indirectly in cryptocurrencies. Some hedge funds also conduct Bitcoin mining activities to generate additional returns.</p>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Digital Investment in Nondigital Assets</strong></p>
+                    <p><strong>Asset-backed tokens</strong> represent digital ownership of physical assets or financial assets (nondigital assets). These tokenized assets are collateralized by the underlying asset, such as oil, gold, or equities. Asset-backed tokens can potentially increase liquidity of high-priced assets, such as real estate, by allowing for fractional ownership. A digital representation also allows for an immutable record of ownership, which improves transparency and reduces transaction costs. Regulators generally classify asset-backed tokens as securities.</p>
+
+                    <p>The Ethereum network is often used to issue asset-backed tokens by allowing P2P interactions via smart contracts. <strong>Decentralized applications</strong>, referred to as <strong>dApps</strong>, enable transactions to be recorded on the blockchain without the need for a centralized system.</p>
+
+                    <p><strong>Decentralized finance (DeFi)</strong> grew out of this movement toward financial decentralization. DeFi seeks to develop sophisticated financial products and services using open-source financial applications. Essentially, DeFi is a marketplace of dApps that can offer a medium for exchange, a store of value, tokenization of assets, and immutable records of ownership. Currently, most dApps focus on digital asset speculation.</p>
+                </div>
+            </section>
+
+            <!-- LOS 84.d -->
+            <section class="los-block" id="los-d">
+                <span class="los-header">LOS 84.d</span>
+                <span class="los-requirement">Analyze sources of risk, return, and diversification among digital asset investments.</span>
+                <div class="content-body">
+                    <p>Cryptocurrency values depend largely on asset appreciation, and a significant driver of prices is their limited supply. For instance, Bitcoin is limited to 21 million units. As a result, some investors refer to Bitcoin as "digital gold."</p>
+
+                    <p>To date, Bitcoin has generated high returns and high volatility compared to traditional asset classes. For example, Bitcoin's price has risen from $0.05 when it was first made publicly available in mid-2010 to over $65,000 in November 2021, before falling below $20,000 in June 2022.</p>
+
+                    <div class="diagram-container">
+                        <div class="diagram-title">Figure 84.2: Monthly Log Returns for Bitcoin and Asset Class Benchmarks<br>(January 2011–January 2022)</div>
+                        <div class="scatter-plot">
+                            <svg width="100%" height="100%" viewBox="0 0 700 400">
+                                <!-- Axes -->
+                                <line x1="80" y1="350" x2="650" y2="350" stroke="var(--text-muted)" stroke-width="2"/>
+                                <line x1="80" y1="50" x2="80" y2="350" stroke="var(--text-muted)" stroke-width="2"/>
+                                
+                                <!-- Axis labels -->
+                                <text x="365" y="390" fill="var(--text-muted)" text-anchor="middle" font-size="14">Standard Deviation (%)</text>
+                                <text x="30" y="200" fill="var(--text-muted)" text-anchor="middle" font-size="14" transform="rotate(-90 30 200)">Average Return (%)</text>
+                                
+                                <!-- Grid lines -->
+                                <line x1="80" y1="200" x2="650" y2="200" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="5,5"/>
+                                <line x1="365" y1="50" x2="365" y2="350" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="5,5"/>
+                                
+                                <!-- Data points -->
+                                <!-- Bitcoin (high risk, high return) -->
+                                <circle cx="600" cy="100" r="12" fill="var(--vibrant-green)" opacity="0.8"/>
+                                <text x="600" y="85" fill="var(--vibrant-green)" text-anchor="middle" font-size="13" font-weight="700">Bitcoin</text>
+                                
+                                <!-- Emerging Market Equities -->
+                                <circle cx="400" cy="180" r="10" fill="#e74c3c" opacity="0.8"/>
+                                <text x="400" y="165" fill="#e74c3c" text-anchor="middle" font-size="12">EM Equities</text>
+                                
+                                <!-- S&P 500 -->
+                                <circle cx="320" cy="190" r="10" fill="#3498db" opacity="0.8"/>
+                                <text x="320" y="175" fill="#3498db" text-anchor="middle" font-size="12">S&P 500</text>
+                                
+                                <!-- Real Estate -->
+                                <circle cx="280" cy="210" r="10" fill="#9b59b6" opacity="0.8"/>
+                                <text x="280" y="195" fill="#9b59b6" text-anchor="middle" font-size="12">Real Estate</text>
+                                
+                                <!-- Commodities -->
+                                <circle cx="360" cy="240" r="10" fill="#f39c12" opacity="0.8"/>
+                                <text x="360" y="225" fill="#f39c12" text-anchor="middle" font-size="12">Commodities</text>
+                                
+                                <!-- Bonds -->
+                                <circle cx="180" cy="260" r="10" fill="#1abc9c" opacity="0.8"/>
+                                <text x="180" y="245" fill="#1abc9c" text-anchor="middle" font-size="12">Bonds</text>
+                                
+                                <!-- Scale indicators -->
+                                <text x="80" y="365" fill="var(--text-muted)" text-anchor="middle" font-size="11">0</text>
+                                <text x="650" y="365" fill="var(--text-muted)" text-anchor="middle" font-size="11">High</text>
+                                <text x="65" y="355" fill="var(--text-muted)" text-anchor="end" font-size="11">0</text>
+                                <text x="65" y="55" fill="var(--text-muted)" text-anchor="end" font-size="11">High</text>
+                            </svg>
+                        </div>
+                        <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 1rem;">
+                            Bitcoin exhibits significantly higher returns and volatility compared to traditional asset classes.
+                        </p>
+                    </div>
+
+                    <p>Other cryptocurrencies exhibit similar price volatility to Bitcoin. This volatility reflects the overall uncertainty associated with this asset class. Even though some of these assets are regulated as digital commodities in the United States and formal rules in the European Union are under development, investors remain wary due to recent fraud and crime. Consequently, cryptocurrencies have been severely restricted by several countries, including China, which banned them outright in 2021.</p>
+
+                    <div class="highlight-quote">
+                        Historically, cryptocurrency returns have demonstrated low correlations with traditional asset class returns. Therefore, cryptocurrencies have the potential to provide portfolio diversification benefits. However, correlations may increase during periods of extreme market stress.
+                    </div>
+
+                    <p>In general, cryptocurrency prices are influenced by the unique aspects of this asset class, including market adoption, risk appetite, technological innovation, network impacts, speculation, and regulation.</p>
+
+                    <div class="diagram-container">
+                        <div class="diagram-title">Figure 84.3: Correlations Between Monthly Log Returns for Cryptocurrencies<br>and Selected Asset Classes (January 2011–January 2022)</div>
+                        <div class="correlation-matrix">
+                            <div class="correlation-row">
+                                <div class="correlation-label">Bitcoin vs S&P 500</div>
+                                <div class="correlation-bar" style="width: 27%;">
+                                    <div class="correlation-value">0.27</div>
+                                </div>
+                            </div>
+                            <div class="correlation-row">
+                                <div class="correlation-label">Bitcoin vs EM Equities</div>
+                                <div class="correlation-bar" style="width: 31%;">
+                                    <div class="correlation-value">0.31</div>
+                                </div>
+                            </div>
+                            <div class="correlation-row">
+                                <div class="correlation-label">Bitcoin vs Real Estate</div>
+                                <div class="correlation-bar" style="width: 22%;">
+                                    <div class="correlation-value">0.22</div>
+                                </div>
+                            </div>
+                            <div class="correlation-row">
+                                <div class="correlation-label">Bitcoin vs Commodities</div>
+                                <div class="correlation-bar" style="width: 19%;">
+                                    <div class="correlation-value">0.19</div>
+                                </div>
+                            </div>
+                            <div class="correlation-row">
+                                <div class="correlation-label">Bitcoin vs Bonds</div>
+                                <div class="correlation-bar" style="width: 8%;">
+                                    <div class="correlation-value">0.08</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 1.5rem;">
+                            Low correlations with traditional asset classes suggest diversification benefits, though correlations may rise during market stress.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Concepts -->
+            <section class="los-block" id="key-concepts">
+                <span class="los-header">KEY CONCEPTS</span>
+                <div class="content-body">
+                    <div class="key-concepts-box">
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 84.a</div>
+                            <p>Digital assets are those that can be electronically created, stored, and transferred. This alternative asset class includes cryptocurrencies, tokens, and digital collectibles. A digital asset relies on distributed ledger technology (DLT).</p>
+                            
+                            <p style="margin-top: 0.8rem;">A blockchain is a digital ledger that records information sequentially within blocks. Consensus protocols determine how blocks are chained together. The main types of consensus mechanisms are <strong>proof of work</strong> (miners use powerful computers to verify transactions) and <strong>proof of stake</strong> (validators pledge collateral to guarantee the validity of transactions).</p>
+                            
+                            <p style="margin-top: 0.8rem;">In <strong>permissionless networks</strong>, transactions are visible to all users within the network, and any user can execute a transaction. In <strong>permissioned networks</strong>, some network activities may be modified or restricted for users.</p>
+                            
+                            <p style="margin-top: 0.8rem;">A <strong>cryptocurrency</strong> is a digital currency issued privately with no backing from a central bank. <strong>Stablecoins</strong> offer stable digital currency values by linking to another asset (e.g., the U.S. dollar). <strong>Meme coins</strong> are launched for entertainment purposes. A <strong>central bank digital currency</strong> is a digital version of a bank note or coin issued by a central bank.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Tokenization</strong> uses blockchain technology to digitally track the historical record of asset ownership.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 84.b</div>
+                            <p>The key differences in investment features between digital assets and other asset classes are as follows:</p>
+                            <ul style="margin-top: 0.8rem;">
+                                <li>Most digital assets are not backed by underlying assets or cash flows, as traditional financial instruments are. Digital assets do not have expected earnings, so they have no fundamental value.</li>
+                                <li>Traditional financial assets are typically recorded on private ledgers maintained by central intermediaries. Digital assets are typically recorded on decentralized digital ledgers.</li>
+                                <li>Traditional financial assets are traded and priced in fiat currencies. Digital assets are an alternative to fiat currencies and are mainly used for online transactions.</li>
+                                <li>Most jurisdictions have clear and established rules that govern traditional financial instruments. Digital assets currently lack these well-developed standards.</li>
+                            </ul>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 84.c</div>
+                            <p><strong>Centralized exchanges</strong> allow participants to trade directly and electronically on private servers. <strong>Decentralized exchanges</strong> operate on a distributed framework where multiple computers service the network. For both exchanges, investor protection concerns arise due to a lack of regulatory oversight.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Direct investment</strong> in cryptocurrencies occurs when a transaction is recorded directly on the blockchain. Investing in cryptocurrencies directly has several risks, including scam ICOs, pump-and-dump schemes, market manipulation, theft, and attempts to gain access to cryptocurrency wallet credentials.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Indirect investment</strong> in cryptocurrencies can be achieved through coin trusts, futures contracts, exchange-traded products, stocks, and hedge funds.</p>
+                            
+                            <p style="margin-top: 0.8rem;"><strong>Asset-backed tokens</strong> represent digital ownership of nondigital assets. The movement toward decentralization and using digital investment forms for nondigital assets has led to decentralized finance (DeFi) products and services.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 84.d</div>
+                            <p>Cryptocurrency values are driven by asset appreciation and the limited supply of currency units. To date, digital assets have generated high returns and high volatility compared to traditional asset classes. Because digital asset returns have demonstrated low correlations with traditional asset class returns, this alternative asset class has the potential to provide portfolio diversification benefits.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="doc-footer">
+                PROJECT BY <a href="https://www.linkedin.com/in/sahil-gaikwad-1953b0259/" target="_blank">SAHIL GAIKWAD</a>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:var(--vibrant-green); margin-bottom: 1rem;">Candidate Excellence</h2>
+            <p style="margin-bottom: 2rem; line-height: 1.8;">"This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality."</p>
+            <p style="font-weight: 800; letter-spacing: 2px;">BY SAHIL GAIKWAD</p>
+            <div onclick="closeModals()" style="margin-top: 2rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ DISMISS ]</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="calModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="calTitle" style="color:var(--vibrant-green); margin-bottom: 1rem;">Date</h2>
+            <p id="calDate" style="font-weight: 800; margin-bottom: 1.5rem;"></p>
+            <textarea style="width:100%; height:80px; padding:10px; border: 1px solid var(--border-color); color:inherit; background:transparent;" placeholder="Enter notes..."></textarea>
+            <div onclick="closeModals()" style="margin-top: 1rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ SAVE ]</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function openAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
+        function openCalendar() { 
+            document.getElementById('calModal').style.display = 'flex'; 
+            document.getElementById('calDate').innerText = new Date().toDateString();
+            document.getElementById('calTitle').innerText = new Date().toLocaleString('default', { month: 'long' });
+        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.height = scrolled + "%";
+
+            const sections = document.querySelectorAll('.los-block, .doc-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

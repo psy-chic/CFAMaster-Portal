@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading 81 | Executive Study Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 260px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            padding-left: 10px;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .progress-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 0%;
+            background: var(--vibrant-green);
+            transition: 0.1s;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 4rem;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        }
+
+        .nav-controls {
+            position: fixed; top: 25px; right: 30px;
+            display: flex; gap: 12px; z-index: 1001;
+        }
+
+        .ctrl-btn {
+            width: 45px; height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main);
+            cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .ctrl-btn:hover { background: var(--vibrant-green); color: white; transform: scale(1.1); }
+
+        .doc-header { text-align: center; margin-bottom: 3rem; }
+        h1 { font-size: 2.5rem; margin: 1rem 0; font-weight: 800; }
+        .section-divider { width: 120px; height: 5px; background: var(--vibrant-green); margin: 2rem auto; border-radius: 10px; }
+        
+        .los-block { margin-bottom: 5rem; scroll-margin-top: 100px; }
+        .los-header { font-weight: 800; color: var(--vibrant-green); border-bottom: 1px solid var(--vibrant-green); display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; }
+        .los-requirement { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 1.5rem; font-style: italic; }
+        .content-body { font-family: 'Lora', serif; font-size: 1.05rem; }
+        .content-body p { margin-bottom: 1.2rem; }
+        .content-body ul, .content-body ol { margin-left: 2rem; margin-bottom: 1.2rem; }
+        .content-body li { margin-bottom: 0.5rem; }
+        .content-body strong { color: var(--vibrant-green); }
+        
+        .highlight-quote {
+            border-left: 4px solid var(--vibrant-green);
+            padding: 1.5rem; margin: 2rem 0;
+            background: rgba(16, 185, 129, 0.05);
+            font-style: italic;
+        }
+
+        .quadrant-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .quadrant-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .quadrant-chart {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            aspect-ratio: 1;
+        }
+
+        .category-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--vibrant-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .strategy-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .strategy-item {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .strategy-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .strategy-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .key-concepts-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid var(--vibrant-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .concept-title {
+            font-weight: 700;
+            color: var(--vibrant-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 2rem 0;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--vibrant-green);
+            font-weight: 700;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .doc-footer {
+            margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.8rem; letter-spacing: 2px;
+        }
+        .doc-footer a { color: var(--vibrant-green); text-decoration: none; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-box { background: var(--paper-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 90%; max-width: 500px; padding: 3rem; border-radius: 8px; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="sidebar-header">Course Map</div>
+        <ul class="nav-list">
+            <li class="nav-item" data-section="intro"><a href="#intro" class="nav-link">Top of Reading</a></li>
+            <li class="nav-item" data-section="module-81-1"><a href="#module-81-1" class="nav-link">Module 81.1: Real Estate</a></li>
+            <li class="nav-item" data-section="los-a"><a href="#los-a" class="nav-link">LOS 81.a: RE Features</a></li>
+            <li class="nav-item" data-section="quadrant"><a href="#quadrant" class="nav-link">RE Quadrant</a></li>
+            <li class="nav-item" data-section="direct-re"><a href="#direct-re" class="nav-link">Direct Investment</a></li>
+            <li class="nav-item" data-section="indirect-re"><a href="#indirect-re" class="nav-link">Indirect Investment</a></li>
+            <li class="nav-item" data-section="los-b"><a href="#los-b" class="nav-link">LOS 81.b: RE Characteristics</a></li>
+            <li class="nav-item" data-section="module-81-2"><a href="#module-81-2" class="nav-link">Module 81.2: Infrastructure</a></li>
+            <li class="nav-item" data-section="los-c"><a href="#los-c" class="nav-link">LOS 81.c: Infra Features</a></li>
+            <li class="nav-item" data-section="los-d"><a href="#los-d" class="nav-link">LOS 81.d: Infra Characteristics</a></li>
+            <li class="nav-item" data-section="key-concepts"><a href="#key-concepts" class="nav-link">Key Concepts</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="nav-controls">
+            <a href="dashboard.html" class="ctrl-btn" title="Back to Dashboard"><i class="fa-solid fa-home"></i></a>
+            <div class="ctrl-btn" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+            <div class="ctrl-btn" onclick="openCalendar()"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="ctrl-btn" onclick="openAbout()"><i class="fa-solid fa-user-tie"></i></div>
+        </div>
+
+        <div class="document-container">
+            <header class="doc-header" id="intro">
+                <span style="font-weight: 800; font-size: 0.8rem; letter-spacing: 4px; color: var(--vibrant-green);">READING 81</span>
+                <h1>Real Estate and Infrastructure</h1>
+                <div class="section-divider"></div>
+            </header>
+
+            <!-- MODULE 81.1: REAL ESTATE -->
+            <section class="los-block" id="module-81-1">
+                <span class="los-header">MODULE 81.1</span>
+                <span class="los-requirement">Real Estate</span>
+                <div class="content-body">
+                    <p>Real estate can provide income in the form of rent, as well as the potential for price appreciation. This module explores the features, characteristics, and investment strategies for real estate investments.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-a">
+                <span class="los-header">LOS 81.a</span>
+                <span class="los-requirement">Explain features and characteristics of real estate.</span>
+                <div class="content-body">
+                    <p>Investment in real estate can be made directly in properties or indirectly through limited partnerships and publicly traded securities. The types of real estate include single-family residential and commercial.</p>
+
+                    <p><strong>Four Largest Subcategories of Commercial Real Estate:</strong></p>
+                    <ul>
+                        <li>Office buildings</li>
+                        <li>Shopping</li>
+                        <li>Industrial/warehouse/distribution</li>
+                        <li>Rental residential (single-family detached and multifamily apartment)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="los-block" id="quadrant">
+                <span class="los-header">Real Estate Investment Quadrant</span>
+                <div class="content-body">
+                    <p>Real estate investment can be described in terms of a quadrant with two dimensions:</p>
+
+                    <div class="quadrant-container">
+                        <div class="quadrant-title">Figure 81.1: Basic Forms of Real Estate Investments</div>
+                        
+                        <div class="quadrant-chart">
+                            <svg viewBox="0 0 600 600" style="width: 100%; height: 100%;">
+                                <!-- Grid lines -->
+                                <line x1="300" y1="50" x2="300" y2="550" stroke="var(--vibrant-green)" stroke-width="3"/>
+                                <line x1="50" y1="300" x2="550" y2="300" stroke="var(--vibrant-green)" stroke-width="3"/>
+                                
+                                <!-- Axis labels -->
+                                <text x="300" y="30" text-anchor="middle" fill="var(--vibrant-green)" font-weight="700" font-size="18">PUBLIC</text>
+                                <text x="300" y="580" text-anchor="middle" fill="var(--vibrant-green)" font-weight="700" font-size="18">PRIVATE</text>
+                                <text x="30" y="305" text-anchor="middle" fill="var(--vibrant-green)" font-weight="700" font-size="18" transform="rotate(-90 30 305)">DEBT</text>
+                                <text x="570" y="305" text-anchor="middle" fill="var(--vibrant-green)" font-weight="700" font-size="18" transform="rotate(-90 570 305)">EQUITY</text>
+                                
+                                <!-- Quadrant backgrounds -->
+                                <rect x="50" y="50" width="250" height="250" fill="rgba(16, 185, 129, 0.05)" stroke="var(--border-color)"/>
+                                <rect x="300" y="50" width="250" height="250" fill="rgba(16, 185, 129, 0.08)" stroke="var(--border-color)"/>
+                                <rect x="50" y="300" width="250" height="250" fill="rgba(16, 185, 129, 0.03)" stroke="var(--border-color)"/>
+                                <rect x="300" y="300" width="250" height="250" fill="rgba(16, 185, 129, 0.1)" stroke="var(--border-color)"/>
+                                
+                                <!-- Quadrant 1: Public Debt -->
+                                <text x="175" y="140" text-anchor="middle" fill="var(--text-main)" font-weight="700" font-size="16">PUBLIC DEBT</text>
+                                <text x="175" y="165" text-anchor="middle" fill="var(--text-muted)" font-size="13">• MBS</text>
+                                <text x="175" y="185" text-anchor="middle" fill="var(--text-muted)" font-size="13">• CMBS</text>
+                                <text x="175" y="205" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Mortgage REITs</text>
+                                <text x="175" y="225" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Mortgage ETFs</text>
+                                
+                                <!-- Quadrant 2: Public Equity -->
+                                <text x="425" y="140" text-anchor="middle" fill="var(--text-main)" font-weight="700" font-size="16">PUBLIC EQUITY</text>
+                                <text x="425" y="165" text-anchor="middle" fill="var(--text-muted)" font-size="13">• REIT Shares</text>
+                                <text x="425" y="185" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Real Estate Co.</text>
+                                <text x="425" y="205" text-anchor="middle" fill="var(--text-muted)" font-size="13">• RE ETFs</text>
+                                
+                                <!-- Quadrant 3: Private Debt -->
+                                <text x="175" y="390" text-anchor="middle" fill="var(--text-main)" font-weight="700" font-size="16">PRIVATE DEBT</text>
+                                <text x="175" y="415" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Mortgages</text>
+                                <text x="175" y="435" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Direct Lending</text>
+                                
+                                <!-- Quadrant 4: Private Equity -->
+                                <text x="425" y="390" text-anchor="middle" fill="var(--text-main)" font-weight="700" font-size="16">PRIVATE EQUITY</text>
+                                <text x="425" y="415" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Direct Property</text>
+                                <text x="425" y="435" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Limited Partnerships</text>
+                                <text x="425" y="455" text-anchor="middle" fill="var(--text-muted)" font-size="13">• Joint Ventures</text>
+                            </svg>
+                        </div>
+
+                        <div style="margin-top: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 4px;">
+                            <p style="margin-bottom: 0.8rem;"><strong style="color: var(--vibrant-green);">First Dimension (Vertical):</strong> Public vs. Private Market</p>
+                            <ul style="margin-left: 1.5rem;">
+                                <li><strong>Private Market:</strong> Ownership usually involves direct investment, such as purchasing property or lending money to a purchaser. Direct investments can be solely owned or indirectly owned through partnerships.</li>
+                                <li><strong>Public Market:</strong> Does not involve direct investment. Rather, ownership involves securities that serve as claims on the underlying assets.</li>
+                            </ul>
+
+                            <p style="margin-top: 1.5rem; margin-bottom: 0.8rem;"><strong style="color: var(--vibrant-green);">Second Dimension (Horizontal):</strong> Debt vs. Equity</p>
+                            <ul style="margin-left: 1.5rem;">
+                                <li><strong>Equity Investor:</strong> Has an ownership interest in real estate or securities of an entity that owns real estate. Equity investors control decisions such as borrowing money, property management, and the exit strategy.</li>
+                                <li><strong>Debt Investor:</strong> A lender that owns a mortgage or mortgage-backed securities. A mortgage is collateralized (secured) by the underlying real estate. The lender has a higher priority claim than an equity investor in the event of default.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-quote">
+                        Each of the basic forms has its own risk, expected returns, regulations, legal issues, and market structure. Private real estate investments are usually larger than public investments because real estate is indivisible and illiquid. With public real estate investments, the investors can divide ownership without having to divide the property. As a result, public real estate investments are liquid and enable investors to diversify by participating in more properties.
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="direct-re">
+                <span class="los-header">Direct Real Estate Investment</span>
+                <div class="content-body">
+                    <p>Direct investment involves purchasing and financing a real estate investment.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Benefits of Direct Investment</div>
+                        <ul>
+                            <li><strong>Control:</strong> The owner can decide on what to purchase, how to finance it, what improvements to make, to which segment of tenants to market the property, and when to sell.</li>
+                            <li><strong>Diversification:</strong> Real estate returns are less than perfectly correlated with the returns of stocks and bonds. Thus, adding private real estate investment to a portfolio can reduce risk relative to the expected portfolio return.</li>
+                            <li><strong>Tax Benefits:</strong> Real estate can provide deductions for noncash depreciation (even as properties typically appreciate) as well as interest expense.</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Drawbacks of Direct Investment</div>
+                        <ul>
+                            <li>Illiquidity and price opacity</li>
+                            <li>Complexity of managing property</li>
+                            <li>Need for specialized knowledge about current market conditions</li>
+                            <li>High initial investment/capital needed</li>
+                            <li>Concentration risk if a portfolio has one or few properties</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="indirect-re">
+                <span class="los-header">Indirect Real Estate Investment</span>
+                <div class="content-body">
+                    <p>Indirect investments in real estate can be through limited partnerships, joint ventures, or publicly traded securities.</p>
+
+                    <div class="category-box">
+                        <div class="category-title">Real Estate Investment Trusts (REITs)</div>
+                        <p>REITs are a popular form of investment for income-producing real estate as they are exempt from double taxation. REITs are exchange traded, and therefore (unlike mutual funds) they do not face redemption/liquidation risk. REITs have managers with the specialized knowledge necessary to invest in properties successfully. REITs report GAAP metrics such as earnings per share (EPS). Some REITs also provide non-GAAP metrics such as net asset value.</p>
+
+                        <p style="margin-top: 1.5rem;"><strong>Types of REITs:</strong></p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Equity REITs:</strong> Invest in real estate directly or via partnerships</li>
+                            <li><strong>Mortgage REITs:</strong> Lend money for real estate or invest in MBSs/CMBSs</li>
+                            <li><strong>Hybrid REITs:</strong> Invest in both real estate and mortgages</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-box">
+                        <div class="strategy-title" style="font-size: 1.2rem; text-align: center; margin-bottom: 1.5rem;">REIT Investment Strategies</div>
+                        
+                        <div class="strategy-item">
+                            <div class="strategy-title">Core Real Estate Strategies</div>
+                            <p>Invest in high-quality commercial and residential properties that deliver stable returns. These REITs typically have open-end structures with indefinite lives. Like open-end mutual funds, this structure gives investors the opportunity to invest or redeem at any time.</p>
+                            <p style="margin-top: 0.5rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Lowest</p>
+                        </div>
+
+                        <div class="strategy-item">
+                            <div class="strategy-title">Core-Plus Real Estate Strategies</div>
+                            <p>Accept a bit more risk than core strategies by undertaking modest development and redevelopment. Most often structured as closed-end funds with finite lives.</p>
+                            <p style="margin-top: 0.5rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Low to Moderate</p>
+                        </div>
+
+                        <div class="strategy-item">
+                            <div class="strategy-title">Value-Add Real Estate Strategies</div>
+                            <p>Undertake development and redevelopment on a somewhat larger scale than core-plus strategies. Structured as closed-end funds with finite lives.</p>
+                            <p style="margin-top: 0.5rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Moderate to High</p>
+                        </div>
+
+                        <div class="strategy-item">
+                            <div class="strategy-title">Opportunistic Real Estate Strategies</div>
+                            <p>Pursue large-scale redevelopment and repurposing of assets, invest in distressed properties, or speculate on upturns in real estate markets. Structured as closed-end funds with finite lives.</p>
+                            <p style="margin-top: 0.5rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Highest</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-b">
+                <span class="los-header">LOS 81.b</span>
+                <span class="los-requirement">Explain the investment characteristics of real estate investments.</span>
+                <div class="content-body">
+                    
+                    <div class="highlight-quote">
+                        <strong>Risk-Return Spectrum of Real Estate Investments:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li><strong>Lowest Risk (Bond-like):</strong> First mortgages or investment-grade CMBSs are the least risky and are similar to investing in bonds.</li>
+                            <li><strong>Low Risk (Bond-like):</strong> Core strategies are the next-least risky and also have bond-like characteristics, in that they receive stable rental income from many lessors (i.e., a diversified income pool).</li>
+                            <li><strong>Higher Risk (Equity-like):</strong> Value-add and opportunistic strategies are the most risky and are more equity-like in their risk-and-return characteristics.</li>
+                        </ul>
+                    </div>
+
+                    <p>Because REITs invest in many properties, they provide diversification benefits in addition to liquidity of a publicly traded security. However, the correlation of REIT returns with equity returns is higher than that for direct investment, and correlations increase during steep market downturns.</p>
+
+                    <p>Even so, real estate investments do improve the risk-return profile of a portfolio relative to one comprising only traditional asset classes.</p>
+                </div>
+            </section>
+
+            <!-- MODULE 81.2: INFRASTRUCTURE -->
+            <section class="los-block" id="module-81-2">
+                <span class="los-header">MODULE 81.2</span>
+                <span class="los-requirement">Infrastructure</span>
+                <div class="content-body">
+                    <p>Infrastructure investments represent long-lived assets that provide essential public services. This module examines the features, characteristics, and investment opportunities in infrastructure assets.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-c">
+                <span class="los-header">LOS 81.c</span>
+                <span class="los-requirement">Explain features and characteristics of infrastructure.</span>
+                <div class="content-body">
+                    
+                    <p><strong>Types of Infrastructure Investments:</strong></p>
+
+                    <div class="category-box">
+                        <div class="category-title">Transportation Assets</div>
+                        <p>Roads, airports, ports, railways</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Utility Assets</div>
+                        <p>Gas distribution facilities, electric generation and distribution facilities, waste disposal and treatment facilities</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Information and Communication Technology</div>
+                        <p>Telecom towers and cable systems</p>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">Social Infrastructure</div>
+                        <p>Prisons, schools, and health care facilities</p>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Investment Methods:</strong></p>
+                    <ul>
+                        <li>Construct the assets and either sell or lease them to the government or operate them directly</li>
+                        <li>Buy existing assets from a government to lease back or operate</li>
+                        <li>Public-private partnership</li>
+                    </ul>
+
+                    <p style="margin-top: 2rem;"><strong>Cash Flow Types:</strong></p>
+                    <ul>
+                        <li><strong>Availability Payments:</strong> For making the infrastructure available</li>
+                        <li><strong>Usage-Based Payments:</strong> Such as highway tolls</li>
+                        <li><strong>Take-or-Pay Arrangements:</strong> Require the buyer to pay minimum purchase price for an agreed-upon volume</li>
+                    </ul>
+
+                    <div class="strategy-box">
+                        <div class="strategy-title" style="font-size: 1.2rem; text-align: center; margin-bottom: 1.5rem;">Brownfield vs. Greenfield Investments</div>
+                        
+                        <div class="strategy-item">
+                            <div class="strategy-title">Brownfield Investments</div>
+                            <p>Investments in infrastructure assets that are already constructed.</p>
+                            <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                                <li><strong>Privatization of Public Assets:</strong> May require additional improvements or involve a sale-leaseback arrangement whereby the asset is purchased from and leased back to the government</li>
+                                <li><strong>Secondary-Stage Investments:</strong> Brownfield investments in fully operational facilities</li>
+                            </ul>
+                            <p style="margin-top: 0.8rem;"><strong>Characteristics:</strong> Provide stable cash flows and relatively high current yields, but offer little potential for growth</p>
+                            <p style="margin-top: 0.3rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Lower</p>
+                        </div>
+
+                        <div class="strategy-item">
+                            <div class="strategy-title">Greenfield Investments</div>
+                            <p>Investments in infrastructure assets that are to be constructed. Greenfield investments typically follow the build-operate-transfer (BOT) life cycle.</p>
+                            <p style="margin-top: 0.8rem;"><strong>Characteristics:</strong> Subject to more uncertainty and may provide relatively lower yields in the near term, but offer greater growth potential. Examples include new toll roads and renewable energy facilities.</p>
+                            <p style="margin-top: 0.3rem; font-style: italic; color: var(--vibrant-green);">Risk Level: Higher</p>
+                        </div>
+                    </div>
+
+                    <p><strong>Investment Vehicles:</strong></p>
+                    <p>Infrastructure assets typically have a long life and are quite large in cost and scale, so direct investment in them has low liquidity. However, more liquid investments backed by infrastructure assets are available through:</p>
+                    <ul>
+                        <li>ETFs</li>
+                        <li>Mutual funds</li>
+                        <li>Private equity funds</li>
+                        <li>Master limited partnerships (MLPs)</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;">Publicly traded vehicles for investing in infrastructure are a small part of the overall universe of infrastructure investments and are relatively concentrated in a few categories of assets. Debt issued to fund infrastructure can be privately placed or publicly traded.</p>
+                </div>
+            </section>
+
+            <section class="los-block" id="los-d">
+                <span class="los-header">LOS 81.d</span>
+                <span class="los-requirement">Explain the investment characteristics of infrastructure investments.</span>
+                <div class="content-body">
+                    
+                    <div class="highlight-quote">
+                        <strong>Risk-Return Characteristics:</strong>
+                        <ul style="margin-top: 1rem; margin-left: 2rem;">
+                            <li><strong>Secondary-Stage Brownfield Investments</strong> (e.g., existing toll roads and hospitals): Least risky, offer the lowest return</li>
+                            <li><strong>Brownfield Investments (General):</strong> Provide stable cash flows and relatively high current yields, but offer little potential for growth</li>
+                            <li><strong>Greenfield Investments</strong> (e.g., new toll roads, renewable energy facilities): Subject to more uncertainty and may provide relatively lower yields in the near term, but offer greater growth potential</li>
+                            <li><strong>Demand-Based Projects:</strong> Infrastructure projects that rely on revenues from uncertain future demand tend to be the riskiest</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Diversification Benefits:</strong></p>
+                    <ul>
+                        <li>Because of long-term contracts and barriers to entry, cash flows from equity investment in infrastructure are stable and have low correlation with public equities</li>
+                        <li>Infrastructure debt also tends to be safer and less affected by economic cycles</li>
+                        <li>Greenfield investments in developing economies, while risky, have generated attractive returns over the long term as they benefit from increasing per-capita incomes and wealth</li>
+                    </ul>
+
+                    <div class="category-box">
+                        <div class="category-title">Risk Considerations</div>
+                        <p>Investors should be aware that infrastructure investments are often subject to:</p>
+                        <ul style="margin-top: 0.8rem;">
+                            <li><strong>Regulatory Risk:</strong> Changes in government regulations</li>
+                            <li><strong>Financial Leverage Risk:</strong> Use of debt financing</li>
+                            <li><strong>Cash Flow Risk:</strong> Possibility that cash flows will be less than expected</li>
+                            <li><strong>Construction Risk:</strong> For projects involving building infrastructure assets</li>
+                            <li><strong>Operational Risk:</strong> When assets are operated by a private owner</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-quote">
+                        Infrastructure investments tend to be most suitable for long-term institutional investors such as pension plans, life insurance companies, and sovereign wealth funds.
+                    </div>
+                </div>
+            </section>
+
+            <section class="los-block" id="key-concepts">
+                <span class="los-header">KEY CONCEPTS</span>
+                <div class="content-body">
+                    <div class="key-concepts-box">
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 81.a</div>
+                            <p>Equity or debt investments in real estate can be direct or indirect. Advantages of direct (equity) investment include more operational control, higher tax savings, and diversification to reduce portfolio risk. Drawbacks of direct real estate investment include illiquidity, operational complexity, a need for specialized knowledge, high initial investment, and concentration risk.</p>
+                            <p style="margin-top: 0.8rem;">Publicly traded securities such as REITs offer liquidity, professional management, exposure to a diversified pool of real estate, and exemption from double taxation.</p>
+                            <p style="margin-top: 0.8rem;">REITs following core strategies invest in high-quality commercial property. Core-plus strategies involve higher risk as they entail some redevelopment of the properties acquired. Value-add strategies take even more risk as they seek to undertake major redevelopment. Opportunistic strategies have the highest risk.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 81.b</div>
+                            <p>Real estate investments with bond-like risk-and-return characteristics include senior debt (the least risky) and core strategies. Real estate investments with equity-like characteristics include core-plus, value-add, and opportunistic strategies.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 81.c</div>
+                            <p>Infrastructure investments include transportation assets, utility assets, information and communication technology, and social infrastructure.</p>
+                            <p style="margin-top: 0.8rem;">Brownfield investments are already constructed infrastructure facilities, while greenfield investments are yet to be constructed. Fully operational facilities that generate stable cash flows are called secondary-stage brownfield investments.</p>
+                        </div>
+
+                        <div class="concept-item">
+                            <div class="concept-title">LOS 81.d</div>
+                            <p>Brownfield investments are less risky than greenfield investments. Demand-based infrastructure projects tend to be the riskiest. Equity investment in infrastructure has a low correlation with public equities, while debt tends to be safer and less affected by economic cycles.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="doc-footer">
+                PROJECT BY <a href="https://www.linkedin.com/in/sahil-gaikwad-1953b0259/" target="_blank">SAHIL GAIKWAD</a>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:var(--vibrant-green); margin-bottom: 1rem;">Candidate Excellence</h2>
+            <p style="margin-bottom: 2rem; line-height: 1.8;">"This platform is made to help my fellow candidates to study and learn more efficiently and in highest ever quality."</p>
+            <p style="font-weight: 800; letter-spacing: 2px;">BY SAHIL GAIKWAD</p>
+            <div onclick="closeModals()" style="margin-top: 2rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ DISMISS ]</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="calModal" onclick="closeModals()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="calTitle" style="color:var(--vibrant-green); margin-bottom: 1rem;">Date</h2>
+            <p id="calDate" style="font-weight: 800; margin-bottom: 1.5rem;"></p>
+            <textarea style="width:100%; height:80px; padding:10px; border: 1px solid var(--border-color); color:inherit; background:transparent;" placeholder="Enter notes..."></textarea>
+            <div onclick="closeModals()" style="margin-top: 1rem; cursor: pointer; color: var(--vibrant-green); font-weight: 800;">[ SAVE ]</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function openAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
+        function openCalendar() { 
+            document.getElementById('calModal').style.display = 'flex'; 
+            document.getElementById('calDate').innerText = new Date().toDateString();
+            document.getElementById('calTitle').innerText = new Date().toLocaleString('default', { month: 'long' });
+        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.height = scrolled + "%";
+
+            const sections = document.querySelectorAll('.los-block, .doc-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
