@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Testing Platform | Alternative Investments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --vibrant-green: #10b981;
+            --vibrant-blue: #3b82f6;
+            --vibrant-purple: #8b5cf6;
+            --vibrant-orange: #f59e0b;
+            --vibrant-red: #ef4444;
+            --paper-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e2e8f0 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --paper-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            color: var(--text-main);
+            transition: all 0.4s ease;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--vibrant-green);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .test-stats {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--vibrant-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--vibrant-green);
+        }
+
+        .question-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .q-nav-btn {
+            aspect-ratio: 1;
+            border: 1px solid var(--border-color);
+            background: var(--paper-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .q-nav-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--vibrant-green);
+        }
+
+        .q-nav-btn.answered {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--vibrant-green);
+        }
+
+        .q-nav-btn.flagged::after {
+            content: '🚩';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 10px;
+        }
+
+        .q-nav-btn.active {
+            background: var(--vibrant-green);
+            color: white;
+            transform: scale(1.15);
+        }
+
+        /* MAIN CONTENT */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-wrapper.expanded {
+            margin-left: 0;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 900;
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--vibrant-green);
+        }
+
+        .timer-display.warning {
+            color: var(--vibrant-orange);
+            animation: pulse 1s infinite;
+        }
+
+        .timer-display.critical {
+            color: var(--vibrant-red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .ctrl-btn {
+            width: 45px;
+            height: 45px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-main);
+        }
+
+        .ctrl-btn:hover {
+            background: var(--vibrant-green);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .content-area {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        /* START SCREEN */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 200px);
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--vibrant-green), var(--vibrant-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .mode-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 3rem;
+        }
+
+        .mode-card {
+            background: var(--paper-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vibrant-green), var(--vibrant-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--vibrant-green);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .mode-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mode-card.selected {
+            border-color: var(--vibrant-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .mode-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .topic-selector {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 2rem;
+        }
+
+        .topic-selector.active {
+            display: block;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .topic-chip {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .topic-chip:hover {
+            border-color: var(--vibrant-green);
+            transform: scale(1.05);
+        }
+
+        .topic-chip.selected {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--vibrant-green);
+            color: var(--vibrant-green);
+        }
+
+        .config-section {
+            width: 100%;
+            max-width: 600px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .config-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--vibrant-green);
+        }
+
+        .config-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .config-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--vibrant-green), var(--vibrant-blue));
+            color: white;
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* QUESTION SCREEN */
+        .question-screen {
+            display: none;
+        }
+
+        .question-screen.active {
+            display: block;
+        }
+
+        .question-card {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--vibrant-green);
+            color: var(--vibrant-green);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--paper-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--vibrant-green);
+            color: var(--vibrant-green);
+        }
+
+        .action-btn.active {
+            background: var(--vibrant-green);
+            color: white;
+            border-color: var(--vibrant-green);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-family: 'Lora', serif;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--vibrant-green);
+            transform: translateX(8px);
+        }
+
+        .option.selected {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--vibrant-green);
+        }
+
+        .option.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--vibrant-green);
+        }
+
+        .option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--vibrant-red);
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--vibrant-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .explanation {
+            display: none;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--vibrant-blue);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--vibrant-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-selector {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--vibrant-purple);
+            border-radius: 12px;
+        }
+
+        .confidence-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--vibrant-purple);
+        }
+
+        .confidence-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .confidence-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            background: var(--paper-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .confidence-btn:hover {
+            border-color: var(--vibrant-purple);
+        }
+
+        .confidence-btn.selected {
+            background: var(--vibrant-purple);
+            color: white;
+            border-color: var(--vibrant-purple);
+        }
+
+        .question-nav-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border: 2px solid var(--border-color);
+            background: var(--paper-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--vibrant-green);
+            transform: scale(1.05);
+        }
+
+        .nav-btn.primary {
+            background: var(--vibrant-green);
+            border-color: var(--vibrant-green);
+            color: white;
+        }
+
+        /* RESULTS SCREEN */
+        .results-screen {
+            display: none;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .score-display {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--vibrant-green), var(--vibrant-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .performance-grade {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .result-card {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .result-card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .result-card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--vibrant-green);
+        }
+
+        .chart-container {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--vibrant-green);
+        }
+
+        .topic-performance {
+            margin-bottom: 1.5rem;
+        }
+
+        .topic-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--vibrant-green), var(--vibrant-blue));
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .review-section {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .review-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-question {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .review-question:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(8px);
+        }
+
+        .review-q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-q-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .result-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .result-badge.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--vibrant-green);
+        }
+
+        .result-badge.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--vibrant-red);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .action-btn-large {
+            padding: 1.2rem 2.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--paper-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn-large:hover {
+            border-color: var(--vibrant-green);
+            transform: scale(1.05);
+        }
+
+        .action-btn-large.primary {
+            background: var(--vibrant-green);
+            border-color: var(--vibrant-green);
+            color: white;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            max-width: 600px;
+            width: 90%;
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--vibrant-green);
+        }
+
+        .modal-text {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--border-color);
+            background: var(--paper-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            border-color: var(--vibrant-green);
+        }
+
+        .modal-btn.primary {
+            background: var(--vibrant-green);
+            border-color: var(--vibrant-green);
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .mode-selection {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .question-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .score-display {
+                font-size: 3rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">Test Progress</div>
+        
+        <div class="test-stats">
+            <div class="stat-item">
+                <span class="stat-label">Questions</span>
+                <span class="stat-value" id="questionCount">0/0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Answered</span>
+                <span class="stat-value" id="answeredCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Flagged</span>
+                <span class="stat-value" id="flaggedCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Time Left</span>
+                <span class="stat-value" id="timeLeft">--:--</span>
+            </div>
+        </div>
+
+        <div class="question-nav" id="questionNav"></div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper" id="mainWrapper">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="timer-display" id="timerDisplay">
+                <i class="fa-solid fa-clock"></i>
+                <span id="timer">00:00</span>
+            </div>
+            <div class="top-controls">
+                <div class="ctrl-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="ctrl-btn" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </div>
+                <div class="ctrl-btn" onclick="pauseTest()" title="Pause Test" id="pauseBtn">
+                    <i class="fa-solid fa-pause"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <!-- START SCREEN -->
+            <div class="start-screen active" id="startScreen">
+                <h1 class="welcome-title">Advanced Testing Platform</h1>
+                <p class="welcome-subtitle">Master Alternative Investments with Intelligent Assessment</p>
+
+                <div class="mode-selection">
+                    <div class="mode-card" onclick="selectMode('mixed')" id="mixedMode">
+                        <div class="mode-icon">🎲</div>
+                        <div class="mode-title">Mixed Questions</div>
+                        <div class="mode-desc">Challenge yourself with randomized questions from all topics. Perfect for comprehensive exam preparation.</div>
+                    </div>
+                    <div class="mode-card" onclick="selectMode('topic')" id="topicMode">
+                        <div class="mode-icon">📚</div>
+                        <div class="mode-title">Topic-Wise Test</div>
+                        <div class="mode-desc">Focus on specific readings and topics. Build expertise systematically with targeted practice.</div>
+                    </div>
+                </div>
+
+                <div class="topic-selector" id="topicSelector">
+                    <div class="config-title" style="text-align: center; margin-bottom: 1.5rem;">Select Topics</div>
+                    <div class="topic-grid" id="topicGrid">
+                        <div class="topic-chip" onclick="toggleTopic('78')">Reading 78: Features</div>
+                        <div class="topic-chip" onclick="toggleTopic('79')">Reading 79: Performance</div>
+                        <div class="topic-chip" onclick="toggleTopic('80')">Reading 80: Private Capital</div>
+                        <div class="topic-chip" onclick="toggleTopic('81')">Reading 81: Real Estate</div>
+                        <div class="topic-chip" onclick="toggleTopic('82')">Reading 82: Natural Resources</div>
+                        <div class="topic-chip" onclick="toggleTopic('83')">Reading 83: Hedge Funds</div>
+                        <div class="topic-chip" onclick="toggleTopic('84')">Reading 84: Digital Assets</div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-title">Test Configuration</div>
+                    <div class="config-item">
+                        <label class="config-label">Number of Questions</label>
+                        <input type="number" class="config-input" id="numQuestions" value="20" min="5" max="100">
+                    </div>
+                    <div class="config-item">
+                        <label class="config-label">Time Limit (minutes, 0 = unlimited)</label>
+                        <input type="number" class="config-input" id="timeLimit" value="30" min="0" max="180">
+                    </div>
+                    <div class="config-item">
+                        <label class="config-label">Advanced Features</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="showExplanations" checked>
+                                <label for="showExplanations">Show Explanations</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="trackConfidence" checked>
+                                <label for="trackConfidence">Track Confidence</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adaptiveDifficulty">
+                                <label for="adaptiveDifficulty">Adaptive Difficulty</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="startTest()" id="startBtn" disabled>
+                    <i class="fa-solid fa-rocket"></i> Start Test
+                </button>
+            </div>
+
+            <!-- QUESTION SCREEN -->
+            <div class="question-screen" id="questionScreen">
+                <div class="question-card fade-in">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="meta-badge" id="questionNumber">Question 1 of 20</span>
+                            <span class="meta-badge" id="questionTopic">Reading 78</span>
+                            <span class="meta-badge" id="questionLOS">LOS 78.a</span>
+                        </div>
+                        <div class="question-actions">
+                            <button class="action-btn" onclick="flagQuestion()" id="flagBtn" title="Flag for Review">
+                                <i class="fa-solid fa-flag"></i>
+                            </button>
+                            <button class="action-btn" onclick="toggleBookmark()" title="Bookmark">
+                                <i class="fa-regular fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="question-text" id="questionText">
+                        Question text will appear here...
+                    </div>
+
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be inserted here -->
+                    </div>
+
+                    <div class="explanation" id="explanation">
+                        <div class="explanation-title"><i class="fa-solid fa-lightbulb"></i> Explanation</div>
+                        <div id="explanationText">Explanation text will appear here...</div>
+                    </div>
+
+                    <div class="confidence-selector" id="confidenceSelector">
+                        <div class="confidence-title">How confident are you in this answer?</div>
+                        <div class="confidence-options">
+                            <button class="confidence-btn" onclick="setConfidence(1)">Not Sure</button>
+                            <button class="confidence-btn" onclick="setConfidence(2)">Somewhat Sure</button>
+                            <button class="confidence-btn" onclick="setConfidence(3)">Very Confident</button>
+                        </div>
+                    </div>
+
+                    <div class="question-nav-btns">
+                        <button class="nav-btn" onclick="previousQuestion()">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTS SCREEN -->
+            <div class="results-screen" id="resultsScreen">
+                <div class="results-header">
+                    <h1 class="results-title">Test Complete!</h1>
+                    <div class="score-display" id="scoreDisplay">85%</div>
+                    <div class="performance-grade" id="performanceGrade">Excellent Work!</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-card-title">Correct Answers</div>
+                        <div class="result-card-value" id="correctAnswers">17/20</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-title">Time Taken</div>
+                        <div class="result-card-value" id="timeTaken">25:34</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-title">Accuracy Rate</div>
+                        <div class="result-card-value" id="accuracyRate">85%</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Performance by Topic</div>
+                    <div id="topicPerformanceChart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Confidence vs Accuracy Analysis</div>
+                    <div id="confidenceChart"></div>
+                </div>
+
+                <div class="review-section">
+                    <div class="review-title">Review Incorrect Answers</div>
+                    <div id="incorrectQuestions"></div>
+                </div>
+
+                <div class="action-btns">
+                    <button class="action-btn-large" onclick="exportResults()">
+                        <i class="fa-solid fa-download"></i> Export Results
+                    </button>
+                    <button class="action-btn-large primary" onclick="resetTest()">
+                        <i class="fa-solid fa-rotate-right"></i> New Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE MODAL -->
+    <div class="modal-overlay" id="pauseModal">
+        <div class="modal-box">
+            <h2 class="modal-title">Test Paused</h2>
+            <p class="modal-text">Take a break! Your progress is saved. Resume whenever you're ready.</p>
+            <div class="modal-btns">
+                <button class="modal-btn" onclick="endTest()">End Test</button>
+                <button class="modal-btn primary" onclick="resumeTest()">Resume</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // QUESTION DATABASE
+        const questionDatabase = {
+            '78': [
+                {
+                    id: 'q78_1',
+                    text: 'An alternative investment fund\'s term sheet describes its:',
+                    options: [
+                        'fee structure and investor requirements.',
+                        'fee structure and management biographies.',
+                        'management biographies and investor requirements.'
+                    ],
+                    correct: 0,
+                    explanation: 'A term sheet describes a fund\'s investment policy, fee structure, and investor requirements. The fund manager may provide other information such as management biographies through investor presentations and other legal documents and agreements.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.b'
+                },
+                {
+                    id: 'q78_2',
+                    text: 'Compared to traditional investments, alternative investments are most likely to be more:',
+                    options: [
+                        'transparent.',
+                        'leveraged.',
+                        'liquid.'
+                    ],
+                    correct: 1,
+                    explanation: 'Alternative investments tend to use more leverage and are typically less liquid and less transparent than traditional investments.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_3',
+                    text: 'Robert Aaron would like to start investing a relatively small amount of capital into commercial real estate, and diversification among these investments is important to him. Which investment method is Aaron most likely to use?',
+                    options: [
+                        'Direct investing.',
+                        'Co-investing.',
+                        'Fund investing.'
+                    ],
+                    correct: 2,
+                    explanation: 'Fund investing gives an investor access to a diversified pool of assets. Co-investing typically requires a larger investment amount. Direct investing provides the least diversification and requires the largest capital investment.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.b'
+                },
+                {
+                    id: 'q78_4',
+                    text: 'Which of the following is a challenge that alternative investments have?',
+                    options: [
+                        'Same information between managers and investors.',
+                        'High correlation with traditional investments.',
+                        'Little availability of performance information.'
+                    ],
+                    correct: 2,
+                    explanation: 'It is difficult to assess performance for alternative investments because historical return and volatility data is less available compared to traditional investments. Alternative investments typically have low correlation with traditional investments and managers have different information than investors.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_5',
+                    text: 'Alternative investments most likely have which of the following characteristics compared to traditional investments?',
+                    options: [
+                        'Unique legal structures and tax treatments.',
+                        'Higher levels of regulation and transparency.',
+                        'Lower leverage and higher liquidity.'
+                    ],
+                    correct: 0,
+                    explanation: 'Compared to traditional investments, alternative investments have unique legal issues and tax treatments that are related to their legal structure and registrations. They often have lower levels of regulation and are less transparent than traditional asset classes. Alternative investments often employ high levels of leverage in illiquid markets.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_6',
+                    text: 'Victrix is a hedge fund that has a 3-and-15 fee structure. Compared to hedge funds with 2-and-20 fee structures, Victrix charges higher:',
+                    options: [
+                        'management fees.',
+                        'redemption fees.',
+                        'incentive fees.'
+                    ],
+                    correct: 0,
+                    explanation: 'Hedge fund fee structures indicate management fees as a percentage of assets under management and incentive fees as a percentage of gains in value. A 3-and-15 fee structure means a fund charges a 3% management fee and a 15% incentive fee.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_7',
+                    text: 'The most likely perceived benefit of alternative investments is:',
+                    options: [
+                        'accessibility.',
+                        'diversification.',
+                        'liquidity.'
+                    ],
+                    correct: 1,
+                    explanation: 'Perceived benefits of alternative investments include (1) risk reduction from diversification since alternative investments tend to have low correlations with traditional investments, and (2) possible higher returns from holding illiquid securities. Alternative investments are generally more difficult to access because of higher minimum investments and specialized knowledge.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_8',
+                    text: 'Hedge fund management fees are most commonly structured as a percentage of:',
+                    options: [
+                        'invested capital.',
+                        'assets under management.',
+                        'committed capital.'
+                    ],
+                    correct: 1,
+                    explanation: 'For hedge funds, management fees are calculated as a percentage of assets under management— typically, the net asset value of the fund. For private capital funds, the management fee is calculated as a percentage of committed capital.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_9',
+                    text: 'An alternative investment fund generated an 18% return during 20X2. The manager has a 20% performance fee, subject to an 8% soft hurdle rate and a catch-up clause. What performance fee did the manager earn for 20X2?',
+                    options: [
+                        '3.6%.',
+                        '3.2%.',
+                        '2.0%.'
+                    ],
+                    correct: 0,
+                    explanation: 'The investor would receive the first 8%. The catch-up would allow the manager to receive the next 2%, so it catches up on earning 20% of the first 10% of gains. The manager will also receive another 20% of the 8% remaining after the catch-up, which is 1.6%. Thus, the manager would earn 2% + 1.6% = 3.6%.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_10',
+                    text: 'What is another name for a performance fee paid by investors in alternative investment funds?',
+                    options: [
+                        'Preferred return.',
+                        'Management fee.',
+                        'Carried interest.'
+                    ],
+                    correct: 2,
+                    explanation: 'The performance fee may also be called an incentive fee or carried interest. This fee is designed to incentivize management based on performance, and typically the fund must exceed a hurdle rate or preferred return before that performance fee is earned. Fund managers earn the management fee regardless of performance.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_11',
+                    text: 'A private equity provision that requires managers to return any periodic incentive fees resulting in investors receiving less than 80% of profits is a:',
+                    options: [
+                        'high water mark.',
+                        'drawdown.',
+                        'clawback.'
+                    ],
+                    correct: 2,
+                    explanation: 'A clawback provision requires the manager to return any periodic incentive fees to investors that would result in investors receiving less than 80% of the profits generated by portfolio investments as a whole.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_12',
+                    text: 'In a 2-and-20 hedge fund fee structure, the "2" refers to a hedge fund\'s:',
+                    options: [
+                        'hurdle rate.',
+                        'incentive fee.',
+                        'management fee.'
+                    ],
+                    correct: 2,
+                    explanation: '"2-and-20" denotes a 2% management fee and a 20% incentive fee.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_13',
+                    text: 'Which private capital fund waterfall structure involves distributing profits as each investment is sold and subsequently shared according to the partnership agreement?',
+                    options: [
+                        'Deal-by-deal waterfall.',
+                        'European waterfall.',
+                        'Whole-of-fund waterfall.'
+                    ],
+                    correct: 0,
+                    explanation: 'With a deal-by-deal waterfall, profits are distributed as each fund investment is sold and subsequently shared according to the partnership agreement. With a whole-of-fund waterfall (or European waterfall), the limited partners receive all distributions until they have received 100% of their initial investment plus the hurdle rate.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_14',
+                    text: 'Which alternative investment incentive fee feature is most likely to benefit the manager?',
+                    options: [
+                        'High-water mark.',
+                        'Clawback provision.',
+                        'Catch-up clause.'
+                    ],
+                    correct: 2,
+                    explanation: 'A catch-up clause allows the manager to catch up on its performance fee after the hurdle rate is reached. A high-water mark disallows performance fees on gains that only offset prior losses. A clawback provision returns prior performance fees to investors if gains are reversed when deals are exited.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.c'
+                },
+                {
+                    id: 'q78_15',
+                    text: 'Compared to fund investing, direct investing most likely has:',
+                    options: [
+                        'more diversification.',
+                        'lower investment amounts.',
+                        'lower fees.'
+                    ],
+                    correct: 2,
+                    explanation: 'Direct investing avoids outside manager fees, while fund managers charge fees. Disadvantages of direct investing include lack of diversification, higher required investment amounts, and specialized knowledge needed to evaluate deals. Fund investing provides access to a more diversified pool of assets, and the investment amount is typically lower because the cost is shared with other investors.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.b'
+                },
+                {
+                    id: 'q78_16',
+                    text: 'Compared to a traditional mutual fund, a hedge fund is more likely to feature:',
+                    options: [
+                        'lower leverage.',
+                        'higher fees.',
+                        'higher liquidity.'
+                    ],
+                    correct: 1,
+                    explanation: 'A hedge fund typically is more likely to use leverage, is less liquid, and charges higher fees than a traditional mutual fund.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_17',
+                    text: 'When compared to traditional investments, alternative investments are characterized by:',
+                    options: [
+                        'less concentrated portfolios.',
+                        'less liquidity of assets held.',
+                        'more regulation and transparency.'
+                    ],
+                    correct: 1,
+                    explanation: 'Alternative investments typically exhibit several characteristics including less liquidity of assets held, relatively more concentrated portfolios, and less regulation and transparency.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.a'
+                },
+                {
+                    id: 'q78_18',
+                    text: 'In the context of alternative investments, an investor has the most control over an asset through:',
+                    options: [
+                        'direct investing.',
+                        'fund investing.',
+                        'co-investing.'
+                    ],
+                    correct: 0,
+                    explanation: 'An investor has control over the investment through direct investing. The fund manager has control over the investments through fund investing, and the fund manager may share control with the investor through co-investing.',
+                    topic: 'Reading 78',
+                    los: 'LOS 78.b'
+                }
+            ],
+            '79': [
+                {
+                    id: 'q79_1',
+                    text: 'Jem Capital is a hedge fund with $150 million of initial investment capital. The fund charges a 2% management fee based on assets under management at the end of the year and a 20% incentive fee. Incentive fees and management fees are calculated independently. In the first year, Jem Capital has a 25% return. What is an investor\'s after-fee return for the year?',
+                    options: [
+                        '3.0%.',
+                        '17.5%.',
+                        '22.5%.'
+                    ],
+                    correct: 1,
+                    explanation: 'Gross value end of year: $150 million × 1.25 = $187.5 million. Management fee: $187.5 million × 2% = $3.75 million. Incentive fee: ($187.5 million – $150 million) × 20% = $7.5 million. Total fees: $11.25 million. After-fee return: [(187.5 – 11.25) / 150] – 1 = 17.5%.',
+                    topic: 'Reading 79',
+                    los: 'LOS 79.b'
+                },
+                {
+                    id: 'q79_2',
+                    text: 'A hedge fund has a 2-and-20 fee structure with a soft hurdle rate of 5% and a high water mark. Incentive fees are calculated net of management fees. The fund\'s gross return is 15% in Year 1, −10% in Year 2, and 30% in Year 3. Incentive fees for Year 3 will be:',
+                    options: [
+                        'less than 20% of the increase in value in Year 3 after management fees.',
+                        'equal to 20% of the increase in value in Year 3 after management fees.',
+                        'greater than 20% of the increase in value in Year 3 after management fees.'
+                    ],
+                    correct: 0,
+                    explanation: 'Because the fund lost value in Year 2 and has a high water mark, incentive fees for Year 3 will be 20% of only the portion of the Year 3 gain that exceeds the previous highest value.',
+                    topic: 'Reading 79',
+                    los: 'LOS 79.b'
+                },
+                {
+                    id: 'q79_3',
+                    text: 'Carr Funds is a hedge fund with $125 million of assets under management at the end of the prior year. The fund has a "1 and 10" fee structure. Incentive fees are calculated on gains net of management fees at the end of the year. In the current year, Carr Funds had a 5% gross return. An investor\'s after-fee return for the year is closest to:',
+                    options: [
+                        '3.6%.',
+                        '4.1%.',
+                        '−6.0%.'
+                    ],
+                    correct: 0,
+                    explanation: 'Gross value end of year: $125 million × 1.05 = $131.25 million. Management fee: $131.25 million × 1% = $1.3125 million. Incentive fee: ($131.25 – $125 – $1.3125) × 10% = $493,750. Total fees = $1,806,250. After-fee return: [($131.25 – $1.80625) / 125] – 1 = 3.56%.',
+                    topic: 'Reading 79',
+                    los: 'LOS 79.b'
+                }
+            ],
+            '80': [
+                {
+                    id: 'q80_1',
+                    text: 'With respect to venture capital, the term "mezzanine-stage financing" is used to describe the financing:',
+                    options: [
+                        'that supports product development and market research.',
+                        'to initiate commercial manufacturing.',
+                        'to prepare for an initial public offering.'
+                    ],
+                    correct: 2,
+                    explanation: 'Mezzanine-stage venture capital financing provides capital during the period prior to an initial public offering.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_2',
+                    text: 'Which of the following types of private debt has the lowest level of risk?',
+                    options: [
+                        'Mezzanine debt.',
+                        'Unitranche debt.',
+                        'Venture debt.'
+                    ],
+                    correct: 1,
+                    explanation: 'Unitranche debt is a blend of different classes of debt and typically ranks between senior and subordinated debt. Mezzanine debt is subordinated to senior debt and often unsecured. Venture debt is the riskiest because it finances start-up companies that have high business risk.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.b'
+                },
+                {
+                    id: 'q80_3',
+                    text: 'The formative stage of venture capital investing when capital is furnished for market research and product development is best characterized as the:',
+                    options: [
+                        'angel investing stage.',
+                        'seed stage.',
+                        'early stage.'
+                    ],
+                    correct: 1,
+                    explanation: 'In the seed stage of venture capital investing, capital is furnished for product development, marketing, and market research. The angel investing stage is when investment funds are used for business plans and assessing market potential. The early stage refers to investments made to fund initial commercial production and sales.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_4',
+                    text: 'Kettering Incorporated is a successful manufacturer of technology hardware. Kettering is seeking capital to finance additional growth that will position the company for an initial public offering. This stage of financing is most accurately described as:',
+                    options: [
+                        'mezzanine-stage financing.',
+                        'angel investing.',
+                        'early-stage financing.'
+                    ],
+                    correct: 0,
+                    explanation: 'Mezzanine stage capital prepares a company for an IPO. Angel investing and early-stage financing describe venture capital in a company\'s formative stages.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_5',
+                    text: 'The vintage year is the year in which a private equity fund:',
+                    options: [
+                        'makes its first investment.',
+                        'receives its first capital commitment.',
+                        'sells its first investment.'
+                    ],
+                    correct: 0,
+                    explanation: 'The vintage year is typically defined as the year a private equity or venture capital fund makes its first investment. The year of the first capital commitment is not necessarily the same as the year of the first investment by the fund into a portfolio company, because there might be a lag between when the capital is committed and when it is deployed.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.c'
+                },
+                {
+                    id: 'q80_6',
+                    text: 'Supplying capital to companies that are just moving into operation, but do not as yet have a product or service available to sell, is a description that best relates to which of the following stages of venture capital investing?',
+                    options: [
+                        'Mezzanine stage.',
+                        'Angel investing stage.',
+                        'Early stage.'
+                    ],
+                    correct: 2,
+                    explanation: 'The description relates best to the early stage wherein the capital that is supplied helps fund initial production and sales.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_7',
+                    text: 'SuperStarts Venture Capital Fund has a favorable performance record compared to other venture capital funds. This most likely suggests SuperStarts began investing its capital in a:',
+                    options: [
+                        'high valuation market.',
+                        'business cycle expansion.',
+                        'business cycle contraction.'
+                    ],
+                    correct: 1,
+                    explanation: 'Funds that begin investing during a business cycle expansion are likely to earn higher rates of return if they specialize in early-stage companies. Funds that begin investing during business cycle contractions are likely to earn higher rates of return if they specialize in distressed companies.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.c'
+                },
+                {
+                    id: 'q80_8',
+                    text: 'At what stage in its lifecycle is a company most likely to have distressed debt?',
+                    options: [
+                        'Mature.',
+                        'Growth.',
+                        'Start-up.'
+                    ],
+                    correct: 0,
+                    explanation: 'Distressed debt is typically that of mature companies that have encountered financial trouble, which may be due to a temporary situation or a structural issue.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.b'
+                },
+                {
+                    id: 'q80_9',
+                    text: 'A private equity firm that provides equity capital to a publicly traded company to finance the company\'s restructuring, but does not take the company private, is best described as engaging in:',
+                    options: [
+                        'private investment in public equity.',
+                        'mezzanine-stage financing.',
+                        'angel investing.'
+                    ],
+                    correct: 0,
+                    explanation: 'Private investment in public equities refers to a private equity firm providing equity financing to publicly traded companies. Angel investing refers to financing the formation of a business. Mezzanine-stage financing refers to capital provided to a firm as it prepares for an initial public offering.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_10',
+                    text: 'Relatively infrequent valuations of private equity portfolio companies most likely cause:',
+                    options: [
+                        'average fund returns to be biased upward.',
+                        'standard deviations of fund returns to be biased upward.',
+                        'correlations of fund returns with equity returns to be biased downward.'
+                    ],
+                    correct: 2,
+                    explanation: 'Infrequent valuation results in downward bias in both standard deviations and correlations.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_11',
+                    text: 'What type of private debt is least likely to have warrants?',
+                    options: [
+                        'Direct lending.',
+                        'Mezzanine debt.',
+                        'Venture debt.'
+                    ],
+                    correct: 0,
+                    explanation: 'Direct lending is often senior and secured. Venture debt and mezzanine debt often have features such as warrants to compensate investors for taking on additional risk.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.b'
+                },
+                {
+                    id: 'q80_12',
+                    text: 'To exit an investment in a portfolio company through a trade sale, a private equity firm sells:',
+                    options: [
+                        'the portfolio company to one of the portfolio company\'s competitors.',
+                        'shares of a portfolio company to the public.',
+                        'the portfolio company to another private equity firm.'
+                    ],
+                    correct: 0,
+                    explanation: 'A trade sale involves selling a portfolio company to a competitor or another strategic buyer. An IPO involves selling all or some shares of a portfolio company to the public. A secondary sale involves selling a portfolio company to another private equity firm or a group of investors.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                },
+                {
+                    id: 'q80_13',
+                    text: 'Compared to traditional bonds, private debt provides:',
+                    options: [
+                        'higher returns.',
+                        'higher liquidity.',
+                        'lower risk.'
+                    ],
+                    correct: 0,
+                    explanation: 'Overall, investing in private debt is illiquid and riskier than investing in traditional debt. Given that investors want to be compensated for higher risk, private debt should have the potential to provide higher returns. Also, some private debt may include equity upside potential.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.b'
+                },
+                {
+                    id: 'q80_14',
+                    text: 'The stage at which venture capital financing is used to fund market research and product development is best characterized as the:',
+                    options: [
+                        'seed stage.',
+                        'early stage.',
+                        'angel investing stage.'
+                    ],
+                    correct: 0,
+                    explanation: 'Seed stage financing is used for market research and to fund product development and/or marketing and is typically the first stage at which a venture capital fund will invest in a start-up company.',
+                    topic: 'Reading 80',
+                    los: 'LOS 80.a'
+                }
+            ],
+            '81': [
+                {
+                    id: 'q81_1',
+                    text: 'Investments in infrastructure assets that will be constructed in the future are most accurately described as:',
+                    options: [
+                        'brownfield infrastructure investments.',
+                        'greenfield infrastructure investments.',
+                        'openfield infrastructure investments.'
+                    ],
+                    correct: 1,
+                    explanation: 'Greenfield investments are infrastructure assets to be built. Brownfield investments are infrastructure assets that already exist.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.c'
+                },
+                {
+                    id: 'q81_2',
+                    text: 'Which of these is an example of a social infrastructure asset?',
+                    options: [
+                        'Railway systems.',
+                        'Public hospitals.',
+                        'Data centers.'
+                    ],
+                    correct: 1,
+                    explanation: 'Social infrastructure includes health care assets, social housing, correctional facilities, and government/municipal buildings. Economic infrastructure supports economic activities and includes transportation (e.g., railway systems), information and communication technology (e.g., data centers), and utility and energy.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.c'
+                },
+                {
+                    id: 'q81_3',
+                    text: 'During steep market downturns, the correlation between REITs and market equity returns tends to:',
+                    options: [
+                        'decrease.',
+                        'increase.',
+                        'stay the same.'
+                    ],
+                    correct: 1,
+                    explanation: 'During steep market downturns, the correlation between REIT returns and equity returns increases.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.b'
+                },
+                {
+                    id: 'q81_4',
+                    text: 'Which type of infrastructure investment has the highest risk-return profile?',
+                    options: [
+                        'Brownfield.',
+                        'Greenfield.',
+                        'Secondary stage.'
+                    ],
+                    correct: 1,
+                    explanation: 'Greenfield investments are new infrastructure development and have the highest risk and potential return. Secondary stage investments in fully operational facilities have the lowest risk-return profile because they have a record of generating steady cash flows. Brownfield investments are redevelopment of existing infrastructure and have more risk than secondary stage investments but less than greenfield investments.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.d'
+                },
+                {
+                    id: 'q81_5',
+                    text: 'Social infrastructure assets most likely include:',
+                    options: [
+                        'broadcasting towers.',
+                        'waste treatment plants.',
+                        'health care facilities.'
+                    ],
+                    correct: 2,
+                    explanation: 'Health care facilities are categorized as social infrastructure. Waste treatment plants are utility infrastructure. Broadcasting towers are communications infrastructure.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.c'
+                },
+                {
+                    id: 'q81_6',
+                    text: 'Which of the following is least likely a unique risk of property development?',
+                    options: [
+                        'Regulatory issues.',
+                        'Default risk.',
+                        'Construction delays.'
+                    ],
+                    correct: 1,
+                    explanation: 'When a development uses leverage, default risk increases because the investment is riskier. However, default risk applies to investments that use leverage; this is not unique to real estate development. Regulatory issues, including environmental regulations and zoning permits, can prevent a real estate development project from moving forward. Construction delays can change the economics of the investment due to changing market conditions and the impact of the time value of money on the IRR.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.b'
+                },
+                {
+                    id: 'q81_7',
+                    text: 'Greenfield investments are most likely to be characterized by:',
+                    options: [
+                        'steady cash flow.',
+                        'opportunistic development.',
+                        'energy efficient assets.'
+                    ],
+                    correct: 1,
+                    explanation: 'Greenfield assets are new infrastructure assets that provide opportunistic development investment opportunities. Development projects do not have steady cash flow; they have negative cash flows during the development phase. Green investing related to ESG involves allocating capital to assets that mitigate environmental challenges such as climate change, resource inefficiency, and biodiversity loss.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.c'
+                },
+                {
+                    id: 'q81_8',
+                    text: 'An additional risk of direct investment in real estate, which is not typically a significant risk in a portfolio of traditional investments, is:',
+                    options: [
+                        'liquidity risk.',
+                        'market risk.',
+                        'counterparty risk.'
+                    ],
+                    correct: 0,
+                    explanation: 'Direct investment in real estate involves liquidity risk because large sums may be invested for long periods before a sale of the property can take place. Market risk exists for both traditional portfolio and real estate investments. Counterparty risk applies mainly to derivative contracts that require a payment from a counterparty, such as swaps and forwards.',
+                    topic: 'Reading 81',
+                    los: 'LOS 81.a'
+                }
+            ],
+            '82': [
+                {
+                    id: 'q82_1',
+                    text: 'When the carrying cost exceeds the benefit of holding commodity:',
+                    options: [
+                        'the spot price is below the forward price.',
+                        'there is an upward sloping forward curve.',
+                        'the forward curve experiences backwardation.'
+                    ],
+                    correct: 2,
+                    explanation: 'When the carrying costs exceed the benefit of holding a commodity, the yield curve experiences backwardation, which is a downward sloping forward curve, and the spot price is above the forward price.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.b'
+                },
+                {
+                    id: 'q82_2',
+                    text: 'If a commodity futures market is in backwardation:',
+                    options: [
+                        'the commodity has a high convenience yield.',
+                        'a long futures position will have a negative roll yield.',
+                        'the futures price of the commodity is higher than the spot price.'
+                    ],
+                    correct: 0,
+                    explanation: 'Backwardation refers to a situation where the futures price is less than the spot price for a commodity. Because commodities have no monetary yield, only a convenience yield greater than the opportunity (interest) cost and storage costs of holding the commodity can lead to backwardation. When a futures market is in backwardation, the roll yield is positive because the futures price moves towards the spot price over the life of the contract.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.b'
+                },
+                {
+                    id: 'q82_3',
+                    text: 'The convenience yield of a commodity is best described as:',
+                    options: [
+                        'a benefit that reduces the forward price.',
+                        'being directly related to the commodity\'s inventory levels.',
+                        'a cash benefit from holding a physical commodity.'
+                    ],
+                    correct: 0,
+                    explanation: 'The convenience yield is a non-cash benefit that comes from holding a physical commodity. Because the owner receives the convenience of access to the commodity, the convenience yield reduces the commodity\'s forward price. The convenience yield is usually inversely related to inventory for that commodity.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.b'
+                },
+                {
+                    id: 'q82_4',
+                    text: 'Funds that invest in specific commodity sectors such as oil and gas or precious metals are best described as:',
+                    options: [
+                        'managed futures funds.',
+                        'sector funds.',
+                        'specialized funds.'
+                    ],
+                    correct: 2,
+                    explanation: 'Specialized funds focus on specific commodities such as oil and gas, grains, precious metals, or industrial metals. Sector funds restrict investments to a particular sector of the market, such as energy or health care. Some managed futures funds may concentrate on specific sectors (e.g., agricultural commodities), while others may be more diversified.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.b'
+                },
+                {
+                    id: 'q82_5',
+                    text: 'Which of the following types of alternative investment is most likely to provide steady cash flows?',
+                    options: [
+                        'Farmland.',
+                        'Timberland.',
+                        'Raw land.'
+                    ],
+                    correct: 0,
+                    explanation: 'Farmland provides the steadiest cash flows compared to timberland and raw land. Farmland can generate cash flows from leasing the land or selling the crop each year. Timberland provides cash flows, but owners have more discretion over the timing; they can choose to let the timber grow or harvest it for sale. Raw land does not generate any current cash flow.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.a'
+                },
+                {
+                    id: 'q82_6',
+                    text: 'Which of the following is least likely to be a benefit of investing in commodities?',
+                    options: [
+                        'Current income.',
+                        'Diversification.',
+                        'Inflation hedge.'
+                    ],
+                    correct: 0,
+                    explanation: 'Natural resources do not generate current income from holding the asset; they generate their income from the asset\'s sales proceeds. Natural resources have a low correlation with equity markets and can provide diversification benefits. Because commodity prices tend to be positively correlated with inflation rates, holding commodities can act as a hedge against inflation risk.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.c'
+                },
+                {
+                    id: 'q82_7',
+                    text: 'If a commodity\'s convenience yield is close to zero, the futures market for that commodity is most likely:',
+                    options: [
+                        'in contango.',
+                        'in backwardation.',
+                        'at fair value.'
+                    ],
+                    correct: 0,
+                    explanation: 'Futures price ≈ Spot price (1 + risk-free rate) + storage costs – convenience yield. If the convenience yield is close to zero, it is likely that the futures price exceeds the spot price, i.e., the market for the commodity is in contango.',
+                    topic: 'Reading 82',
+                    los: 'LOS 82.b'
+                }
+            ],
+            '83': [
+                {
+                    id: 'q83_1',
+                    text: 'The typical trade used by a merger arbitrage fund is:',
+                    options: [
+                        'short position in acquirer, long position in firm being acquired.',
+                        'long position in acquirer, short position in firm being acquired.',
+                        'short positions in both the acquirer and the firm being acquired.'
+                    ],
+                    correct: 0,
+                    explanation: 'Merger arbitrage funds typically short the stock of the acquirer and buy the stock of the firm being acquired.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_2',
+                    text: 'An equity hedge fund strategy that focuses primarily on exploiting overvalued securities is best described as a(n):',
+                    options: [
+                        'fundamental value strategy.',
+                        'event driven strategy.',
+                        'short bias strategy.'
+                    ],
+                    correct: 2,
+                    explanation: 'Equity hedge funds with a short bias attempt to profit from short positions in equities they believe to be overvalued. These funds may hold long equity positions but typically have net short exposure to the market. An event driven strategy focuses on companies involved in mergers, in financial distress, or in other special situations. A fundamental value strategy attempts to identify undervalued equities.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_3',
+                    text: 'A hedge fund that employs a fundamental growth strategy using equity securities is most likely to seek out shares of companies that are:',
+                    options: [
+                        'either undervalued or overvalued.',
+                        'growing revenues and earnings rapidly.',
+                        'undervalued only.'
+                    ],
+                    correct: 1,
+                    explanation: 'Fundamental growth refers to investing in companies that are experiencing high growth and for which the fund managers anticipate significant capital appreciation.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_4',
+                    text: 'Which hedge fund strategy is least likely to have a long bias?',
+                    options: [
+                        'Convertible bond arbitrage.',
+                        'Fundamental long/short.',
+                        'Distressed event-driven.'
+                    ],
+                    correct: 0,
+                    explanation: 'Convertible bond arbitrage aims to be market neutral to exploit mispricing of an underlying bond and its embedded call option. Fundamental long/short is an equity hedge fund strategy that takes long positions in undervalued companies and short stocks or an index to reduce risk, typically maintaining a long bias. Distressed/restructuring is an event-driven strategy that tends to be long biased; it invests in discounted debt in companies in or near bankruptcy.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_5',
+                    text: 'The performance of a hedge fund is most appropriately evaluated:',
+                    options: [
+                        'on a risk-adjusted return basis.',
+                        'against an equity market index.',
+                        'against a strategy-specific benchmark.'
+                    ],
+                    correct: 0,
+                    explanation: 'Because hedge funds pursue strategies that generate high risk-adjusted returns due to market inefficiency or market volatility, their performance is often evaluated on a risk-adjusted return basis, rather than against benchmarks. Strategies that hedge funds use make them difficult to measure against traditional benchmarks. While hedge fund indexes are available, index performance data may be overstated due to survivorship and backfill bias.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_6',
+                    text: 'An example of a relative value hedge fund strategy is:',
+                    options: [
+                        'merger arbitrage.',
+                        'market neutral.',
+                        'convertible arbitrage.'
+                    ],
+                    correct: 2,
+                    explanation: 'Relative value strategies include convertible arbitrage fixed income, asset-backed fixed income, general fixed income, volatility, and multi-strategy. Market neutral is an equity hedge strategy. Merger arbitrage is an event driven strategy.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_7',
+                    text: 'What is the least likely reason an institutional investor would use a separately managed account for a hedge fund investment?',
+                    options: [
+                        'Efficient capital allocation.',
+                        'Higher manager motivation.',
+                        'Enhanced investor control.'
+                    ],
+                    correct: 1,
+                    explanation: 'Benefits of an SMA structure include more customizable portfolio, investor-specific investment mandates, better transparency, efficient capital allocation, higher liquidity, enhanced investor control, and lower fees. Drawbacks include operational complexity, higher governance oversight, and less manager incentive, which could be mitigated through the incentive fee\'s structure.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.b'
+                },
+                {
+                    id: 'q83_8',
+                    text: 'The period of time within which a hedge fund must fulfill a redemption request is the:',
+                    options: [
+                        'lockup period.',
+                        'notice period.',
+                        'withdrawal period.'
+                    ],
+                    correct: 1,
+                    explanation: 'A notice period, typically 30 to 90 days, is the amount of time a fund has after receiving notice of a redemption request to fulfill the redemption request. A lockup period is a minimum length of time before an investor may redeem shares or make withdrawals.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_9',
+                    text: 'What is an example of selection bias when creating a hedge fund index?',
+                    options: [
+                        'A fund reporting for the first time because it performs well.',
+                        'Inconsistent allocation of individual funds to a peer group.',
+                        'A fund being removed from an index because they stopped reporting.'
+                    ],
+                    correct: 1,
+                    explanation: 'Selection bias occurs when individual funds are inconsistently allocated to an index for a particular strategy. Removing a fund from an index because the fund stopped reporting performance is likely to introduce survivorship bias. Including a fund that starts reporting because it has successful performance to report is likely to introduce backfill bias.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.c'
+                },
+                {
+                    id: 'q83_10',
+                    text: 'A hedge fund is most likely to be structured as a:',
+                    options: [
+                        'corporation.',
+                        'limited partnership.',
+                        'trust.'
+                    ],
+                    correct: 1,
+                    explanation: 'Hedge funds are typically structured as a limited partnership or limited liability company, with the general partner or managing member serving as the fund manager.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.b'
+                },
+                {
+                    id: 'q83_11',
+                    text: 'The terms of a hedge fund are least likely to be stated in a:',
+                    options: [
+                        'private placement memorandum.',
+                        'partnership agreement.',
+                        'side letter.'
+                    ],
+                    correct: 2,
+                    explanation: 'A side letter addresses terms for a specific investor (not for the fund in general) and can supersede the terms of the fund\'s offering documents. The primary fund documents that lay out a hedge fund\'s operational framework include the private placement memorandum, partnership agreement, or the articles of incorporation.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.b'
+                },
+                {
+                    id: 'q83_12',
+                    text: 'The notice period for a hedge fund is best described as the period following:',
+                    options: [
+                        'a request for redemption of shares, within which the fund must fulfill the request.',
+                        'an investment in the fund, during which the investor is not permitted to redeem shares.',
+                        'the opening of the fund to investors, before the fund is closed to new investors.'
+                    ],
+                    correct: 0,
+                    explanation: 'The notice period is the time within which a hedge fund must fulfill a request for redemption of shares. The period during which investors may not redeem shares is called a lockup period.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_13',
+                    text: 'Which statement about hedge funds is the most accurate? Hedge funds are:',
+                    options: [
+                        'privately held and available to qualified or accredited investors.',
+                        'highly regulated and limited in strategies they may pursue.',
+                        'lower risk than private equity because they invest mostly in liquid assets.'
+                    ],
+                    correct: 0,
+                    explanation: 'Hedge funds are pooled investment vehicles that are generally available to investors that meet high suitability requirements (e.g., institutional or accredited investors). Hedge funds are lightly regulated and can pursue a wide variety of strategies. Hedge funds tend to invest mostly in liquid debt and equity assets, but they also use leverage and derivatives, which can result in a different risk and return profile than the underlying assets.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.a'
+                },
+                {
+                    id: 'q83_14',
+                    text: 'Which type of biases in a hedge fund index are most likely to overestimate performance?',
+                    options: [
+                        'Backfill bias and survivorship bias.',
+                        'Selection bias and survivorship bias.',
+                        'Backfill bias and selection bias.'
+                    ],
+                    correct: 0,
+                    explanation: 'Survivorship bias eliminates funds that no longer report, meaning that unsuccessful funds that have stopped reporting are not represented in the index performance. Backfill bias includes new funds after they have successful performance to report. As a result, survivorship and backfill bias can lead to overestimating performance. Selection bias is likely to result in a misallocation of funds to an index for a particular strategy but is less likely to result in an overestimation of performance compared to survivorship and backfill bias.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.c'
+                },
+                {
+                    id: 'q83_15',
+                    text: 'When comparing the performance of several hedge funds, the fund with the best risk-adjusted annual performance is the one with the:',
+                    options: [
+                        'highest alpha.',
+                        'lowest standard deviation.',
+                        'highest coefficient of variation.'
+                    ],
+                    correct: 2,
+                    explanation: 'The coefficient of variation can measure returns adjusted for the relative level of risk. The higher the coefficient of variation, the greater the return of the same level of risk. Standard deviation is a measure of risk, and alpha is a measure of return.',
+                    topic: 'Reading 83',
+                    los: 'LOS 83.c'
+                }
+            ],
+            '84': [
+                {
+                    id: 'q84_1',
+                    text: 'Ownership rights to physical assets on distributed ledger technology are represented by a:',
+                    options: [
+                        'blockchain.',
+                        'smart contract.',
+                        'token.'
+                    ],
+                    correct: 2,
+                    explanation: 'Tokens represent ownership rights to physical assets in a blockchain or distributed ledger technology. Smart contracts are computer programs that can execute contracts based on pre-agreed upon conditions.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                },
+                {
+                    id: 'q84_2',
+                    text: 'Which statement best describes how stablecoins maintain a stable value? Stablecoins:',
+                    options: [
+                        'have legal and regulatory backing.',
+                        'can be exchanged for fiat currency.',
+                        'link their value to other assets.'
+                    ],
+                    correct: 2,
+                    explanation: 'Stablecoins are designed to provide price stability by linking their value to a collateralized basket of assets. However, they cannot be exchanged for fiat currency, and they do not have legal and regulatory backing.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                },
+                {
+                    id: 'q84_3',
+                    text: 'Which distributed ledger technology element may include proof of work and proof of stake?',
+                    options: [
+                        'Participation network.',
+                        'Consensus protocols.',
+                        'Digital ledger.'
+                    ],
+                    correct: 1,
+                    explanation: 'A distributed ledger is a shared copy of a database in which entries are recorded and stored. The consensus mechanism is how new entries are added, and the participation network determines who can perform the network functions. Proof of Work (PoW) and Proof of Stake (PoS) are types of consensus protocols that govern how blocks can join the chain.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                },
+                {
+                    id: 'q84_4',
+                    text: 'Investors in an initial coin offering (ICO) typically receive:',
+                    options: [
+                        'registered securities.',
+                        'voting rights in the ICO issuer.',
+                        'cryptocurrency.'
+                    ],
+                    correct: 2,
+                    explanation: 'An ICO is a sale of cryptocurrency to investors in exchange for cash or another cryptocurrency.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                },
+                {
+                    id: 'q84_5',
+                    text: 'Compared to centralized exchanges, decentralized exchanges are more:',
+                    options: [
+                        'vulnerable to attacks.',
+                        'difficult to regulate.',
+                        'popular with investors.'
+                    ],
+                    correct: 1,
+                    explanation: 'The most popular type of cryptocurrency exchange are centralized exchanges. However, they are more vulnerable to attacks. In a decentralized exchange, there is no central source of control. This makes it harder to regulate but also makes it less vulnerable to attacks; if one computer is attacked, the others can still operate on the network.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.c'
+                },
+                {
+                    id: 'q84_6',
+                    text: 'The inherent value of digital assets is least likely to be based on:',
+                    options: [
+                        'features on the blockchain.',
+                        'future cash flow.',
+                        'price appreciation.'
+                    ],
+                    correct: 1,
+                    explanation: 'The value of digital assets comes from anticipated price appreciation and features of the blockchain that may give them the ability to transfer value. They do not generate any cash flow (e.g., interest or dividend income).',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.b'
+                },
+                {
+                    id: 'q84_7',
+                    text: 'Potential impacts of asset-backed tokens most likely include:',
+                    options: [
+                        'more liquidity for higher-priced assets.',
+                        'decreased transparency for transactions.',
+                        'increased transaction fees and costs.'
+                    ],
+                    correct: 0,
+                    explanation: 'Asset-backed tokens represent ownership of physical assets. They can provide more liquidity for higher priced assets through allowing fractional ownership. Since the token allows immutable ownership records and transfer, there is more transparency in the transactions and less transaction cost.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.c'
+                },
+                {
+                    id: 'q84_8',
+                    text: 'With regard to the role of digital assets as an investment class, it is most accurate to state that they:',
+                    options: [
+                        'are a relatively stable investable asset class.',
+                        'may provide diversification benefits.',
+                        'have similar returns with traditional asset classes.'
+                    ],
+                    correct: 1,
+                    explanation: 'It remains inconclusive whether digital assets provide diversification benefits based on correlations with traditional assets. They are a relatively new asset class with no clear legal protections, and are highly speculative in nature, characterized by high volatility and returns.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.d'
+                },
+                {
+                    id: 'q84_9',
+                    text: 'Which type of cryptocurrency-related vehicle invests directly in cryptocurrencies?',
+                    options: [
+                        'Cryptocurrency futures contracts.',
+                        'Cryptocurrency exchange-traded funds.',
+                        'Cryptocurrency coin trusts.'
+                    ],
+                    correct: 2,
+                    explanation: 'Cryptocurrency coin trusts invest in a large pool of a cryptocurrency. Cryptocurrency ETFs do not invest directly in cryptocurrencies but attempt to mimic their returns using cash or derivatives. Cryptocurrency futures contracts are based on cryptocurrency prices but are cash-settled.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.c'
+                },
+                {
+                    id: 'q84_10',
+                    text: 'Cryptocurrency prices are least likely to be affected by:',
+                    options: [
+                        'technological advancement.',
+                        'projected cash flows.',
+                        'regulatory development.'
+                    ],
+                    correct: 1,
+                    explanation: 'Cryptocurrencies do not generate cash flows. Their returns are driven by market adoption, network effects, technological advancement, regulatory development, speculation, and appetite for market risk.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.d'
+                },
+                {
+                    id: 'q84_11',
+                    text: 'Compared to regulated initial public offerings, initial coin offerings most likely have:',
+                    options: [
+                        'longer capital-raising periods.',
+                        'more voting rights.',
+                        'lower issuance costs.'
+                    ],
+                    correct: 2,
+                    explanation: 'Compared to initial public offerings, initial coin offerings typically have lower issuance costs and longer capital raising periods, and usually do not have any voting rights.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                },
+                {
+                    id: 'q84_12',
+                    text: 'Which of the following statements is most accurate regarding the features of digital assets? Digital assets:',
+                    options: [
+                        'are usually validated using permissionless blockchain networks.',
+                        'are typically used as a direct medium of exchange.',
+                        'have well-established legal and regulatory standards.'
+                    ],
+                    correct: 0,
+                    explanation: 'Transactions for digital assets are usually recorded on decentralized ledgers using permissionless blockchain networks. However, digital assets are rarely used as a direct medium of exchange due to transaction costs. Legal and regulatory frameworks are evolving, and digital assets can be illegal in some jurisdictions.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.b'
+                },
+                {
+                    id: 'q84_13',
+                    text: 'Risks of directly investing in large, well-established cryptocurrencies least likely include:',
+                    options: [
+                        'whales.',
+                        'fraud.',
+                        'irretrievability.'
+                    ],
+                    correct: 0,
+                    explanation: '"Whales" are holders of a small cryptocurrency who control a large enough portion to manipulate its price. Two major risks of direct investment in a large cryptocurrency are fraud and loss of access. Fraud may include pump and dump schemes, market manipulation, theft, and attempts to gain access to credentials. Loss of access comes from losing the unique passkey to a cryptocurrency wallet; once the passkey is lost, the owner cannot retrieve the cryptocurrency.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.c'
+                },
+                {
+                    id: 'q84_14',
+                    text: 'A government decides it will privatize vehicle registrations if the province\'s auto insurance companies can record and maintain ownership titles using distributed ledger technology. This application of distributed ledger technology is best characterized as:',
+                    options: [
+                        'blockchain.',
+                        'smart contracts.',
+                        'tokenization.'
+                    ],
+                    correct: 2,
+                    explanation: 'Tokenization refers to maintaining ownership records for physical assets on a distributed ledger. This might, but would not necessarily, use a blockchain, which is a subcategory of distributed ledgers. Smart contracts are computerized agreements designed to automatically carry out certain actions if defined conditions are met.',
+                    topic: 'Reading 84',
+                    los: 'LOS 84.a'
+                }
+            ]
+        };
+
+        // STATE MANAGEMENT
+        let testState = {
+            mode: null,
+            selectedTopics: [],
+            questions: [],
+            currentQuestionIndex: 0,
+            answers: {},
+            confidence: {},
+            flagged: new Set(),
+            bookmarked: new Set(),
+            startTime: null,
+            elapsedTime: 0,
+            isPaused: false,
+            timerInterval: null,
+            timeLimit: 0,
+            config: {
+                showExplanations: true,
+                trackConfidence: true,
+                adaptiveDifficulty: false
+            }
+        };
+
+        // UTILITY FUNCTIONS
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // MODE SELECTION
+        function selectMode(mode) {
+            testState.mode = mode;
+            
+            document.getElementById('mixedMode').classList.remove('selected');
+            document.getElementById('topicMode').classList.remove('selected');
+            
+            if (mode === 'mixed') {
+                document.getElementById('mixedMode').classList.add('selected');
+                document.getElementById('topicSelector').classList.remove('active');
+                testState.selectedTopics = Object.keys(questionDatabase);
+            } else {
+                document.getElementById('topicMode').classList.add('selected');
+                document.getElementById('topicSelector').classList.add('active');
+                testState.selectedTopics = [];
+            }
+            
+            updateStartButton();
+        }
+
+        function toggleTopic(topicId) {
+            const index = testState.selectedTopics.indexOf(topicId);
+            const chipElement = event.target;
+            
+            if (index === -1) {
+                testState.selectedTopics.push(topicId);
+                chipElement.classList.add('selected');
+            } else {
+                testState.selectedTopics.splice(index, 1);
+                chipElement.classList.remove('selected');
+            }
+            
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            const startBtn = document.getElementById('startBtn');
+            if (testState.mode && testState.selectedTopics.length > 0) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        // TEST INITIALIZATION
+        function startTest() {
+            // Get configuration
+            const numQuestions = parseInt(document.getElementById('numQuestions').value);
+            testState.timeLimit = parseInt(document.getElementById('timeLimit').value) * 60;
+            testState.config.showExplanations = document.getElementById('showExplanations').checked;
+            testState.config.trackConfidence = document.getElementById('trackConfidence').checked;
+            testState.config.adaptiveDifficulty = document.getElementById('adaptiveDifficulty').checked;
+
+            // Collect questions from selected topics
+            let allQuestions = [];
+            testState.selectedTopics.forEach(topicId => {
+                if (questionDatabase[topicId]) {
+                    allQuestions = allQuestions.concat(questionDatabase[topicId]);
+                }
+            });
+
+            // Shuffle and select questions
+            allQuestions = shuffleArray(allQuestions);
+            testState.questions = allQuestions.slice(0, Math.min(numQuestions, allQuestions.length));
+
+            // Reset state
+            testState.currentQuestionIndex = 0;
+            testState.answers = {};
+            testState.confidence = {};
+            testState.flagged = new Set();
+            testState.bookmarked = new Set();
+            testState.startTime = Date.now();
+            testState.elapsedTime = 0;
+            testState.isPaused = false;
+
+            // Initialize UI
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('questionScreen').classList.add('active');
+            
+            renderQuestionNav();
+            displayQuestion();
+            startTimer();
+            updateStats();
+        }
+
+        // QUESTION DISPLAY
+        function displayQuestion() {
+            const question = testState.questions[testState.currentQuestionIndex];
+            if (!question) return;
+
+            // Update question metadata
+            document.getElementById('questionNumber').textContent = 
+                `Question ${testState.currentQuestionIndex + 1} of ${testState.questions.length}`;
+            document.getElementById('questionTopic').textContent = question.topic;
+            document.getElementById('questionLOS').textContent = question.los;
+
+            // Display question text
+            document.getElementById('questionText').textContent = question.text;
+
+            // Display options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (testState.answers[question.id] === index) {
+                    optionElement.classList.add('selected');
+                }
+                optionElement.onclick = () => selectAnswer(index);
+                
+                optionElement.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update flag button
+            const flagBtn = document.getElementById('flagBtn');
+            if (testState.flagged.has(question.id)) {
+                flagBtn.classList.add('active');
+            } else {
+                flagBtn.classList.remove('active');
+            }
+
+            // Show/hide confidence selector
+            const confidenceSelector = document.getElementById('confidenceSelector');
+            if (testState.config.trackConfidence) {
+                confidenceSelector.style.display = 'block';
+                updateConfidenceDisplay();
+            } else {
+                confidenceSelector.style.display = 'none';
+            }
+
+            // Hide explanation initially
+            document.getElementById('explanation').classList.remove('show');
+
+            // Update next button text
+            const nextBtn = document.getElementById('nextBtn');
+            if (testState.currentQuestionIndex === testState.questions.length - 1) {
+                nextBtn.innerHTML = 'Finish Test <i class="fa-solid fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+            }
+        }
+
+        function selectAnswer(optionIndex) {
+            const question = testState.questions[testState.currentQuestionIndex];
+            testState.answers[question.id] = optionIndex;
+
+            // Update UI
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+
+            // Show explanation if enabled
+            if (testState.config.showExplanations) {
+                showExplanation();
+            }
+
+            updateStats();
+            renderQuestionNav();
+        }
+
+        function showExplanation() {
+            const question = testState.questions[testState.currentQuestionIndex];
+            const explanation = document.getElementById('explanation');
+            const explanationText = document.getElementById('explanationText');
+            
+            explanationText.textContent = question.explanation;
+            explanation.classList.add('show');
+
+            // Highlight correct/incorrect
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, idx) => {
+                if (idx === question.correct) {
+                    opt.classList.add('correct');
+                } else if (idx === testState.answers[question.id] && idx !== question.correct) {
+                    opt.classList.add('incorrect');
+                }
+            });
+        }
+
+        function setConfidence(level) {
+            const question = testState.questions[testState.currentQuestionIndex];
+            testState.confidence[question.id] = level;
+            updateConfidenceDisplay();
+        }
+
+        function updateConfidenceDisplay() {
+            const question = testState.questions[testState.currentQuestionIndex];
+            const buttons = document.querySelectorAll('.confidence-btn');
+            buttons.forEach((btn, idx) => {
+                btn.classList.remove('selected');
+                if (testState.confidence[question.id] === idx + 1) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+
+        // QUESTION NAVIGATION
+        function nextQuestion() {
+            if (testState.currentQuestionIndex < testState.questions.length - 1) {
+                testState.currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        function previousQuestion() {
+            if (testState.currentQuestionIndex > 0) {
+                testState.currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function goToQuestion(index) {
+            testState.currentQuestionIndex = index;
+            displayQuestion();
+        }
+
+        function flagQuestion() {
+            const question = testState.questions[testState.currentQuestionIndex];
+            const flagBtn = document.getElementById('flagBtn');
+            
+            if (testState.flagged.has(question.id)) {
+                testState.flagged.delete(question.id);
+                flagBtn.classList.remove('active');
+            } else {
+                testState.flagged.add(question.id);
+                flagBtn.classList.add('active');
+            }
+            
+            updateStats();
+            renderQuestionNav();
+        }
+
+        function toggleBookmark() {
+            const question = testState.questions[testState.currentQuestionIndex];
+            if (testState.bookmarked.has(question.id)) {
+                testState.bookmarked.delete(question.id);
+            } else {
+                testState.bookmarked.add(question.id);
+            }
+        }
+
+        function renderQuestionNav() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            
+            testState.questions.forEach((q, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'q-nav-btn';
+                btn.textContent = idx + 1;
+                btn.onclick = () => goToQuestion(idx);
+                
+                if (testState.answers[q.id] !== undefined) {
+                    btn.classList.add('answered');
+                }
+                if (testState.flagged.has(q.id)) {
+                    btn.classList.add('flagged');
+                }
+                if (idx === testState.currentQuestionIndex) {
+                    btn.classList.add('active');
+                }
+                
+                nav.appendChild(btn);
+            });
+        }
+
+        // TIMER MANAGEMENT
+        function startTimer() {
+            if (testState.timeLimit === 0) {
+                // Count up if no limit
+                testState.timerInterval = setInterval(() => {
+                    if (!testState.isPaused) {
+                        testState.elapsedTime++;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            } else {
+                // Count down if limit exists
+                testState.timerInterval = setInterval(() => {
+                    if (!testState.isPaused) {
+                        testState.elapsedTime++;
+                        const remaining = testState.timeLimit - testState.elapsedTime;
+                        
+                        if (remaining <= 0) {
+                            finishTest();
+                            return;
+                        }
+                        
+                        updateTimerDisplay();
+                        
+                        // Warning colors
+                        const timerDisplay = document.getElementById('timerDisplay');
+                        const percentRemaining = (remaining / testState.timeLimit) * 100;
+                        
+                        if (percentRemaining <= 10) {
+                            timerDisplay.classList.add('critical');
+                            timerDisplay.classList.remove('warning');
+                        } else if (percentRemaining <= 25) {
+                            timerDisplay.classList.add('warning');
+                            timerDisplay.classList.remove('critical');
+                        } else {
+                            timerDisplay.classList.remove('warning', 'critical');
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const timer = document.getElementById('timer');
+            const timeLeft = document.getElementById('timeLeft');
+            
+            if (testState.timeLimit === 0) {
+                timer.textContent = formatTime(testState.elapsedTime);
+                timeLeft.textContent = formatTime(testState.elapsedTime);
+            } else {
+                const remaining = testState.timeLimit - testState.elapsedTime;
+                timer.textContent = formatTime(remaining);
+                timeLeft.textContent = formatTime(remaining);
+            }
+        }
+
+        function pauseTest() {
+            testState.isPaused = true;
+            document.getElementById('pauseModal').classList.add('active');
+        }
+
+        function resumeTest() {
+            testState.isPaused = false;
+            document.getElementById('pauseModal').classList.remove('active');
+        }
+
+        function endTest() {
+            clearInterval(testState.timerInterval);
+            document.getElementById('pauseModal').classList.remove('active');
+            finishTest();
+        }
+
+        // STATS UPDATE
+        function updateStats() {
+            const answeredCount = Object.keys(testState.answers).length;
+            document.getElementById('questionCount').textContent = 
+                `${testState.currentQuestionIndex + 1}/${testState.questions.length}`;
+            document.getElementById('answeredCount').textContent = answeredCount;
+            document.getElementById('flaggedCount').textContent = testState.flagged.size;
+        }
+
+        // RESULTS CALCULATION
+        function finishTest() {
+            clearInterval(testState.timerInterval);
+            
+            // Calculate results
+            let correctCount = 0;
+            let incorrectQuestions = [];
+            let topicScores = {};
+            let confidenceAnalysis = { correct: [0, 0, 0], incorrect: [0, 0, 0] };
+            
+            testState.questions.forEach(q => {
+                const userAnswer = testState.answers[q.id];
+                const isCorrect = userAnswer === q.correct;
+                
+                if (isCorrect) {
+                    correctCount++;
+                } else if (userAnswer !== undefined) {
+                    incorrectQuestions.push(q);
+                }
+                
+                // Topic analysis
+                if (!topicScores[q.topic]) {
+                    topicScores[q.topic] = { correct: 0, total: 0 };
+                }
+                topicScores[q.topic].total++;
+                if (isCorrect) topicScores[q.topic].correct++;
+                
+                // Confidence analysis
+                const confidence = testState.confidence[q.id];
+                if (confidence && userAnswer !== undefined) {
+                    if (isCorrect) {
+                        confidenceAnalysis.correct[confidence - 1]++;
+                    } else {
+                        confidenceAnalysis.incorrect[confidence - 1]++;
+                    }
+                }
+            });
+            
+            const totalAnswered = Object.keys(testState.answers).length;
+            const score = totalAnswered > 0 ? (correctCount / totalAnswered) * 100 : 0;
+            
+            // Display results
+            displayResults(score, correctCount, totalAnswered, topicScores, incorrectQuestions, confidenceAnalysis);
+        }
+
+        function displayResults(score, correct, total, topicScores, incorrectQuestions, confidenceAnalysis) {
+            document.getElementById('questionScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+            
+            // Score display
+            document.getElementById('scoreDisplay').textContent = `${Math.round(score)}%`;
+            document.getElementById('correctAnswers').textContent = `${correct}/${total}`;
+            document.getElementById('timeTaken').textContent = formatTime(testState.elapsedTime);
+            document.getElementById('accuracyRate').textContent = `${Math.round(score)}%`;
+            
+            // Performance grade
+            const gradeElement = document.getElementById('performanceGrade');
+            if (score >= 90) {
+                gradeElement.textContent = 'Outstanding! 🌟';
+                gradeElement.style.color = 'var(--vibrant-green)';
+            } else if (score >= 80) {
+                gradeElement.textContent = 'Excellent Work! 🎯';
+                gradeElement.style.color = 'var(--vibrant-green)';
+            } else if (score >= 70) {
+                gradeElement.textContent = 'Good Job! 👍';
+                gradeElement.style.color = 'var(--vibrant-blue)';
+            } else if (score >= 60) {
+                gradeElement.textContent = 'Keep Practicing 📚';
+                gradeElement.style.color = 'var(--vibrant-orange)';
+            } else {
+                gradeElement.textContent = 'More Study Needed 💪';
+                gradeElement.style.color = 'var(--vibrant-red)';
+            }
+            
+            // Topic performance chart
+            renderTopicPerformance(topicScores);
+            
+            // Confidence chart
+            renderConfidenceChart(confidenceAnalysis);
+            
+            // Incorrect questions review
+            renderIncorrectQuestions(incorrectQuestions);
+        }
+
+        function renderTopicPerformance(topicScores) {
+            const container = document.getElementById('topicPerformanceChart');
+            container.innerHTML = '';
+            
+            Object.keys(topicScores).forEach(topic => {
+                const data = topicScores[topic];
+                const percentage = (data.correct / data.total) * 100;
+                
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'topic-performance';
+                topicDiv.innerHTML = `
+                    <div class="topic-name">
+                        <span>${topic}</span>
+                        <span>${data.correct}/${data.total} (${Math.round(percentage)}%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                
+                container.appendChild(topicDiv);
+            });
+        }
+
+        function renderConfidenceChart(confidenceAnalysis) {
+            const container = document.getElementById('confidenceChart');
+            container.innerHTML = '';
+            
+            const labels = ['Not Sure', 'Somewhat Sure', 'Very Confident'];
+            
+            labels.forEach((label, idx) => {
+                const correct = confidenceAnalysis.correct[idx];
+                const incorrect = confidenceAnalysis.incorrect[idx];
+                const total = correct + incorrect;
+                const accuracy = total > 0 ? (correct / total) * 100 : 0;
+                
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'topic-performance';
+                topicDiv.innerHTML = `
+                    <div class="topic-name">
+                        <span>${label}</span>
+                        <span>${correct}/${total} correct (${Math.round(accuracy)}%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${accuracy}%"></div>
+                    </div>
+                `;
+                
+                container.appendChild(topicDiv);
+            });
+        }
+
+        function renderIncorrectQuestions(incorrectQuestions) {
+            const container = document.getElementById('incorrectQuestions');
+            container.innerHTML = '';
+            
+            if (incorrectQuestions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--vibrant-green); font-weight: 700;">Perfect Score! No incorrect answers! 🎉</p>';
+                return;
+            }
+            
+            incorrectQuestions.forEach((q, idx) => {
+                const div = document.createElement('div');
+                div.className = 'review-question';
+                
+                const userAnswer = testState.answers[q.id];
+                div.innerHTML = `
+                    <div class="review-q-header">
+                        <span style="font-weight: 700;">${q.topic} - ${q.los}</span>
+                        <span class="result-badge incorrect">Incorrect</span>
+                    </div>
+                    <div class="review-q-text">${q.text}</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        <div style="color: var(--vibrant-red);">Your answer: ${String.fromCharCode(65 + userAnswer)}) ${q.options[userAnswer]}</div>
+                        <div style="color: var(--vibrant-green);">Correct answer: ${String.fromCharCode(65 + q.correct)}) ${q.options[q.correct]}</div>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        // UI CONTROLS
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+            document.getElementById('mainWrapper').classList.toggle('expanded');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function exportResults() {
+            const results = {
+                score: document.getElementById('scoreDisplay').textContent,
+                correct: document.getElementById('correctAnswers').textContent,
+                time: document.getElementById('timeTaken').textContent,
+                date: new Date().toLocaleString(),
+                topics: testState.selectedTopics,
+                mode: testState.mode
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `test-results-${Date.now()}.json`;
+            link.click();
+            
+            alert('Results exported successfully!');
+        }
+
+        function resetTest() {
+            // Reset all state
+            testState = {
+                mode: null,
+                selectedTopics: [],
+                questions: [],
+                currentQuestionIndex: 0,
+                answers: {},
+                confidence: {},
+                flagged: new Set(),
+                bookmarked: new Set(),
+                startTime: null,
+                elapsedTime: 0,
+                isPaused: false,
+                timerInterval: null,
+                timeLimit: 0,
+                config: {
+                    showExplanations: true,
+                    trackConfidence: true,
+                    adaptiveDifficulty: false
+                }
+            };
+            
+            // Reset UI
+            document.getElementById('resultsScreen').classList.remove('active');
+            document.getElementById('startScreen').classList.add('active');
+            document.getElementById('mixedMode').classList.remove('selected');
+            document.getElementById('topicMode').classList.remove('selected');
+            document.getElementById('topicSelector').classList.remove('active');
+            document.querySelectorAll('.topic-chip').forEach(chip => chip.classList.remove('selected'));
+            document.getElementById('startBtn').disabled = true;
+            
+            // Reset timer display
+            document.getElementById('timerDisplay').classList.remove('warning', 'critical');
+        }
+
+        // Initialize
+        window.onload = function() {
+            console.log('Advanced Testing Platform Initialized');
+            console.log(`Total questions in database: ${Object.values(questionDatabase).reduce((sum, arr) => sum + arr.length, 0)}`);
+        };
+    </script>
+</body>
+</html>
